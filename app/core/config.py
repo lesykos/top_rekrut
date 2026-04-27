@@ -64,6 +64,9 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
+    AUTH0_DOMAIN: str
+    AUTH0_AUDIENCE: str
+
     # EMAILS_FROM_EMAIL: EmailStr | None = None
     # EMAILS_FROM_NAME: str | None = None
 
