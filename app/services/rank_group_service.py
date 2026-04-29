@@ -59,7 +59,7 @@ class RankGroupService(BaseService[RankGroup]):
         try:
             rank_groups = self.repository.get_all()
             rank_groups_public = [
-                RankGroupPublic.model_validate(branch) for branch in rank_groups
+                RankGroupPublic.model_validate(rank_group) for rank_group in rank_groups
             ]
             return RankGroupsPublic(
                 data=rank_groups_public, count=len(rank_groups_public)
@@ -82,11 +82,11 @@ class RankGroupService(BaseService[RankGroup]):
     ) -> RankGroup | None:
         """Update existing RankGroup"""
         try:
-            existing_branch = self.get_rank_group_by_slug(rank_group_slug)
+            existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
 
-            if existing_branch is not None:
+            if existing_rank_group is not None:
                 return self.repository.update_from_data(
-                    existing_branch, rank_group_data
+                    existing_rank_group, rank_group_data
                 )
 
         except HTTPException:
@@ -97,8 +97,8 @@ class RankGroupService(BaseService[RankGroup]):
     def delete_rank_group(self, rank_group_slug: str) -> None:
         """Delete existing RankGroup"""
         try:
-            existing_branch = self.get_rank_group_by_slug(rank_group_slug)
-            self.repository.delete(existing_branch) if existing_branch else None
+            existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
+            self.repository.delete(existing_rank_group) if existing_rank_group else None
         except HTTPException:
             raise
         except Exception as e:
