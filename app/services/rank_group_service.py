@@ -82,7 +82,7 @@ class RankGroupService(BaseService[RankGroup]):
         try:
             existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
             return self.repository.update_from_data(
-                existing_rank_group, rank_group_data  # type: ignore
+                existing_rank_group, rank_group_data
             )
         except HTTPException:
             raise
@@ -93,7 +93,7 @@ class RankGroupService(BaseService[RankGroup]):
         """Delete existing RankGroup"""
         try:
             existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
-            self.repository.delete(existing_rank_group)  # type: ignore
+            self.repository.delete(existing_rank_group)
         except HTTPException:
             raise
         except Exception as e:

@@ -30,11 +30,7 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         self, army_branch: ArmyBranch, army_branch_data: ArmyBranchUpdate
     ) -> ArmyBranch:
         """Update ArmyBranch from ArmyBranchUpdate data"""
-        # Update fields:
         # exclude_unset - get only fields user provided
-        update_dict = army_branch_data.model_dump(exclude_unset=True, exclude_none=True)
-        for field, value in update_dict.items():
-            # dynamically update DB object with new values
-            setattr(army_branch, field, value)
-
+        update_data = army_branch_data.model_dump(exclude_unset=True, exclude_none=True)
+        army_branch.sqlmodel_update(update_data)
         return self.update(army_branch)

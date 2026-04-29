@@ -30,11 +30,7 @@ class RankGroupRepository(BaseRepository[RankGroup]):
         self, rank_group: RankGroup, rank_group_data: RankGroupUpdate
     ) -> RankGroup:
         """Update RankGroup from RankGroupUpdate data"""
-        # Update fields:
         # exclude_unset - get only fields user provided
-        update_dict = rank_group_data.model_dump(exclude_unset=True, exclude_none=True)
-        for field, value in update_dict.items():
-            # dynamically update DB object with new values
-            setattr(rank_group, field, value)
-
+        update_data = rank_group_data.model_dump(exclude_unset=True, exclude_none=True)
+        rank_group.sqlmodel_update(update_data)
         return self.update(rank_group)

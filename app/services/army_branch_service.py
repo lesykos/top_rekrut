@@ -81,7 +81,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         """Update existing ArmyBranch"""
         try:
             existing_branch = self.get_army_branch_by_slug(army_branch_slug)
-            return self.repository.update_from_data(existing_branch, army_branch_data)  # type: ignore
+            return self.repository.update_from_data(existing_branch, army_branch_data)
         except HTTPException:
             raise
         except Exception as e:
@@ -91,7 +91,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         """Delete existing ArmyBranch"""
         try:
             existing_branch = self.get_army_branch_by_slug(army_branch_slug)
-            self.repository.delete(existing_branch)  # type: ignore
+            self.repository.delete(existing_branch)
         except HTTPException:
             raise
         except Exception as e:
