@@ -1,4 +1,3 @@
-# from typing import Any
 from pydantic import model_validator
 from sqlmodel import Field, SQLModel
 from slugify import slugify

@@ -7,8 +7,8 @@ from .army_branch_repository import ArmyBranchRepository
 from .rank_group_repository import RankGroupRepository
 
 __all__ = [
+    "ArmyBranchRepository",
     "BaseRepository",
     "ItemRepository",
-    "ArmyBranchRepository",
     "RankGroupRepository",
 ]

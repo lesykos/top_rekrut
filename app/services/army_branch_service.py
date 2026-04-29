@@ -1,4 +1,4 @@
-from typing import List
+from typing import Sequence
 from fastapi import HTTPException
 from sqlmodel import Session
 from app.models.army_branch import (
@@ -46,7 +46,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         except Exception as e:
             self._handle_exception(e, f"get_army_branch_by_slug({army_branch_slug})")
 
-    def get_army_branches(self) -> List[ArmyBranch] | None:
+    def get_army_branches(self) -> Sequence[ArmyBranch] | None:
         """Get a list of ArmyBranches"""
         try:
             army_branches = self.repository.get_all()

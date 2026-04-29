@@ -1,4 +1,4 @@
-from typing import List
+from typing import Sequence
 from fastapi import HTTPException
 from sqlmodel import Session
 from app.models.rank_group import (
@@ -46,7 +46,7 @@ class RankGroupService(BaseService[RankGroup]):
         except Exception as e:
             self._handle_exception(e, f"get_rank_group_by_slug({rank_group_slug})")
 
-    def get_rank_groups(self) -> List[RankGroup] | None:
+    def get_rank_groups(self) -> Sequence[RankGroup] | None:
         """Get a list of RankGroups"""
         try:
             rank_groups = self.repository.get_all()
@@ -94,7 +94,7 @@ class RankGroupService(BaseService[RankGroup]):
         except Exception as e:
             self._handle_exception(e, f"update_rank_group({rank_group_slug})")
 
-    def delete_rank_group(self, rank_group_slug: str):
+    def delete_rank_group(self, rank_group_slug: str) -> None:
         """Delete existing RankGroup"""
         try:
             existing_branch = self.get_rank_group_by_slug(rank_group_slug)

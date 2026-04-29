@@ -6,4 +6,9 @@ from .item_service import ItemService
 from .army_branch_service import ArmyBranchService
 from .rank_group_service import RankGroupService
 
-__all__ = ["BaseService", "ItemService", "ArmyBranchService", "RankGroupService"]
+__all__ = [
+    "ArmyBranchService",
+    "BaseService",
+    "ItemService",
+    "RankGroupService",
+]

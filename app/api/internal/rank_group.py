@@ -1,4 +1,4 @@
-from typing import List
+from typing import Sequence
 from fastapi import APIRouter
 from app.api.deps import SessionDep
 from app.models.rank_group import RankGroup, RankGroupCreate, RankGroupUpdate
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/rank-groups", tags=["rank-groups"])
 
 # Index - show all RankGroups
 @router.get("/")
-async def get_rank_groups(session: SessionDep) -> List[RankGroup] | None:
+async def get_rank_groups(session: SessionDep) -> Sequence[RankGroup] | None:
     return RankGroupService(session).get_rank_groups()
 
 

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Sequence
 from sqlmodel import select, col
 from app.models.army_branch import ArmyBranch, ArmyBranchCreate, ArmyBranchUpdate
 from .base import BaseRepository
@@ -9,7 +9,7 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
     def get_model_class(self) -> type[ArmyBranch]:
         return ArmyBranch
 
-    def get_all(self) -> Any:
+    def get_all(self) -> Sequence[ArmyBranch]:
         """Get all army branches ordered by position."""
         return self.session.exec(
             select(ArmyBranch).order_by(col(ArmyBranch.position).asc())
@@ -32,7 +32,7 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         """Update ArmyBranch from ArmyBranchUpdate data"""
         # Update fields:
         # exclude_unset - get only fields user provided
-        update_dict = army_branch_data.model_dump(exclude_unset=True)
+        update_dict = army_branch_data.model_dump(exclude_unset=True, exclude_none=True)
         for field, value in update_dict.items():
             # dynamically update DB object with new values
             setattr(army_branch, field, value)

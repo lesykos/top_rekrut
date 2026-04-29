@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Sequence
 from sqlmodel import select, col
 from app.models.rank_group import RankGroup, RankGroupCreate, RankGroupUpdate
 from .base import BaseRepository
@@ -9,8 +9,8 @@ class RankGroupRepository(BaseRepository[RankGroup]):
     def get_model_class(self) -> type[RankGroup]:
         return RankGroup
 
-    def get_all(self) -> Any:
-        """Get all RankGroup ordered by position."""
+    def get_all(self) -> Sequence[RankGroup]:
+        """Get all RankGroups ordered by position."""
         return self.session.exec(
             select(RankGroup).order_by(col(RankGroup.position).asc())
         ).all()
@@ -32,7 +32,7 @@ class RankGroupRepository(BaseRepository[RankGroup]):
         """Update RankGroup from RankGroupUpdate data"""
         # Update fields:
         # exclude_unset - get only fields user provided
-        update_dict = rank_group_data.model_dump(exclude_unset=True)
+        update_dict = rank_group_data.model_dump(exclude_unset=True, exclude_none=True)
         for field, value in update_dict.items():
             # dynamically update DB object with new values
             setattr(rank_group, field, value)
