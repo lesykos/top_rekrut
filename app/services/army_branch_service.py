@@ -20,27 +20,34 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         self.repository = ArmyBranchRepository(session)
 
     def get_army_branch(self, army_branch_id: int) -> ArmyBranch | None:
-        """Get army_branch by ID"""
+        """Get ArmyBranch by ID"""
         try:
             army_branch = self.repository.get_by_id(army_branch_id)
             if not army_branch:
                 raise HTTPException(status_code=404, detail="Army branch not found!")
             return army_branch
+
+        except HTTPException:
+            raise
+        # Catch everything else (bugs) and handle/log them
         except Exception as e:
             self._handle_exception(e, f"get_army_branch({army_branch_id})")
 
     def get_army_branch_by_slug(self, army_branch_slug: str) -> ArmyBranch | None:
-        """Get army_branch by slug"""
+        """Get ArmyBranch by slug"""
         try:
             army_branch = self.repository.get_by_slug(army_branch_slug)
             if not army_branch:
                 raise HTTPException(status_code=404, detail="Army branch not found!")
             return army_branch
+
+        except HTTPException:
+            raise
         except Exception as e:
             self._handle_exception(e, f"get_army_branch_by_slug({army_branch_slug})")
 
     def get_army_branches(self) -> List[ArmyBranch] | None:
-        """Get list of army_branchs"""
+        """Get a list of ArmyBranches"""
         try:
             army_branches = self.repository.get_all()
             return army_branches
@@ -48,7 +55,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
             self._handle_exception(e, "get_army_branches")
 
     def get_army_branches_public(self) -> ArmyBranchesPublic | None:
-        """Get list of public army_branchs"""
+        """Get a list of public ArmyBranches"""
         try:
             army_branches = self.repository.get_all()
             army_branches_public = [
@@ -63,7 +70,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
     def create_army_branch(
         self, army_branch_data: ArmyBranchCreate
     ) -> ArmyBranch | None:
-        """Create new army_branch with validation."""
+        """Create new ArmyBranch with validation."""
         try:
             army_branch = self.repository.create_from_data(army_branch_data)
             return army_branch
@@ -75,7 +82,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
     def update_army_branch(
         self, army_branch_slug: str, army_branch_data: ArmyBranchUpdate
     ) -> ArmyBranch | None:
-        """Update existing army_branch"""
+        """Update existing ArmyBranch"""
         try:
             existing_branch = self.get_army_branch_by_slug(army_branch_slug)
 
@@ -90,7 +97,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
             self._handle_exception(e, f"update_army_branch({army_branch_slug})")
 
     def delete_army_branch(self, army_branch_slug: str):
-        """Delete existing army_branch"""
+        """Delete existing ArmyBranch"""
         try:
             existing_branch = self.get_army_branch_by_slug(army_branch_slug)
             self.repository.delete(existing_branch) if existing_branch else None
