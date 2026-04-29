@@ -23,6 +23,7 @@ if config.config_file_name is not None:
 from sqlmodel import SQLModel  # noqa
 from app.models.item import Item  # noqa
 from app.models.army_branch import ArmyBranch  # noqa
+from app.models.rank_group import RankGroup  # noqa
 from app.core.config import settings  # noqa
 
 target_metadata = SQLModel.metadata

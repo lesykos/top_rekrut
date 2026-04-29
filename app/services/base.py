@@ -11,7 +11,7 @@ class BaseService(ABC, Generic[T]):
     def __init__(self, session: Session):
         self.session = session
 
-    def _handle_exception(self, e: Exception, operation: str) -> None:
+    def _handle_exception(self, e: Exception, operation: str):
         """Handle and log service exceptions."""
         print(f"Error in {operation}: {str(e)}")
         raise e

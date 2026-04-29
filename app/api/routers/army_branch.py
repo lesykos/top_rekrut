@@ -11,7 +11,11 @@ router = APIRouter(
 )
 
 
-# Get all army branches
+# Get all ArmyBranchesPublic
+# response_model - API correctness
+#   (FastAPI will validate the response, filter fields, serialize data)
+# return type - developer correctness
+#   static typing, readability, catching bugs
 @router.get("/", response_model=ArmyBranchesPublic)
-async def get_army_branches(session: SessionDep) -> ArmyBranchesPublic | None:
+def get_army_branches(session: SessionDep) -> ArmyBranchesPublic:
     return ArmyBranchService(session).get_army_branches_public()

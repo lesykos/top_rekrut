@@ -4,5 +4,11 @@
 from .base import BaseRepository
 from .item_repository import ItemRepository
 from .army_branch_repository import ArmyBranchRepository
+from .rank_group_repository import RankGroupRepository
 
-__all__ = ["BaseRepository", "ItemRepository", "ArmyBranchRepository"]
+__all__ = [
+    "ArmyBranchRepository",
+    "BaseRepository",
+    "ItemRepository",
+    "RankGroupRepository",
+]

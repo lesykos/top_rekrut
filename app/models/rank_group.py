@@ -4,18 +4,17 @@ from slugify import slugify
 
 
 # Shared properties
-class ArmyBranchBase(SQLModel):
+class RankGroupBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
     slug: str | None = Field(
         default=None,
         min_length=1,
         max_length=255,
-        # regex=r"^[a-z0-9-]+$",
     )
-    position: int = Field(default=30, ge=1, le=30)
+    position: int = Field(default=9, ge=1, le=9)
 
 
-class ArmyBranchCreate(ArmyBranchBase):
+class RankGroupCreate(RankGroupBase):
     @model_validator(mode="before")
     @classmethod
     def generate_slug(cls, data):
@@ -25,15 +24,15 @@ class ArmyBranchCreate(ArmyBranchBase):
         return data
 
 
-class ArmyBranchUpdate(SQLModel):
+class RankGroupUpdate(SQLModel):
     name: str | None = Field(default=None, min_length=1, max_length=255)
     slug: str | None = Field(default=None, min_length=1, max_length=255)
-    position: int | None = Field(default=None, ge=1, le=30)
+    position: int | None = Field(default=None, ge=1, le=9)
 
 
 # Database model, db table inferred from class name
-class ArmyBranch(ArmyBranchBase, table=True):
-    __tablename__ = "army_branches"  # type: ignore
+class RankGroup(RankGroupBase, table=True):
+    __tablename__ = "rank_groups"  # type: ignore
     id: int | None = Field(default=None, primary_key=True)
     slug: str = Field(  # type: ignore
         index=True,
@@ -43,10 +42,10 @@ class ArmyBranch(ArmyBranchBase, table=True):
 
 
 # Properties to return via API
-class ArmyBranchPublic(ArmyBranchBase):
+class RankGroupPublic(RankGroupBase):
     pass
 
 
-class ArmyBranchesPublic(SQLModel):
-    data: list[ArmyBranchPublic]
+class RankGroupsPublic(SQLModel):
+    data: list[RankGroupPublic]
     count: int
