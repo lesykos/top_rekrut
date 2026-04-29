@@ -11,6 +11,6 @@ router = APIRouter(
 
 
 # Get all RankGroupsPublic
-@router.get("/")
-def get_rank_groups(session: SessionDep) -> RankGroupsPublic | None:
+@router.get("/", response_model=RankGroupsPublic)
+def get_rank_groups(session: SessionDep) -> RankGroupsPublic:
     return RankGroupService(session).get_rank_groups_public()
