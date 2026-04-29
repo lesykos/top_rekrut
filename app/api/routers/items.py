@@ -13,10 +13,10 @@ router = APIRouter(
 
 
 @router.get("/", response_model=ItemsPublic)
-async def read_items(session: SessionDep) -> Any:
+def read_items(session: SessionDep) -> Any:
     return ItemService(session).get_items()
 
 
 @router.get("/{item_id}", dependencies=[TokenDep], response_model=ItemPublic)
-async def read_item(session: SessionDep, item_id: int) -> Any:
+def read_item(session: SessionDep, item_id: int) -> Any:
     return ItemService(session).get_item(item_id)

@@ -13,5 +13,5 @@ router = APIRouter(
 
 # Get all ArmyBranchesPublic
 @router.get("/")
-async def get_army_branches(session: SessionDep) -> ArmyBranchesPublic | None:
+def get_army_branches(session: SessionDep) -> ArmyBranchesPublic | None:
     return ArmyBranchService(session).get_army_branches_public()
