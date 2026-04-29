@@ -3,5 +3,6 @@
 
 from .base import BaseRepository
 from .item_repository import ItemRepository
+from .army_branch_repository import ArmyBranchRepository
 
-__all__ = ["BaseRepository", "ItemRepository"]
+__all__ = ["BaseRepository", "ItemRepository", "ArmyBranchRepository"]

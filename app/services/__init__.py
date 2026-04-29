@@ -3,5 +3,6 @@
 
 from .base import BaseService
 from .item_service import ItemService
+from .army_branch_service import ArmyBranchService
 
-__all__ = ["BaseService", "ItemService"]
+__all__ = ["BaseService", "ItemService", "ArmyBranchService"]
