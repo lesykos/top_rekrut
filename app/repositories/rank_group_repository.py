@@ -31,9 +31,9 @@ class RankGroupRepository(BaseRepository[RankGroup]):
         except IntegrityError as e:
             self.session.rollback()
             if "ix_rank_groups_slug" in str(e.orig):
-                raise ValidationError("Key (slug) already exists.")
+                raise ValidationError("Key (slug) already exists.") from None
 
-            raise ConflictError("Database integrity error")
+            raise ConflictError("Database integrity error") from e
 
     def update_from_data(
         self, rank_group: RankGroup, rank_group_data: RankGroupUpdate
@@ -49,6 +49,6 @@ class RankGroupRepository(BaseRepository[RankGroup]):
         except IntegrityError as e:
             self.session.rollback()
             if "ix_rank_groups_slug" in str(e.orig):
-                raise ValidationError("Key (slug) already exists.")
+                raise ValidationError("Key (slug) already exists.") from None
 
-            raise ConflictError("Database integrity error")
+            raise ConflictError("Database integrity error") from e

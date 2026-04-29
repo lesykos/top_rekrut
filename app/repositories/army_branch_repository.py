@@ -31,9 +31,9 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         except IntegrityError as e:
             self.session.rollback()
             if "ix_army_branches_slug" in str(e.orig):
-                raise ValidationError("Key (slug) already exists.")
+                raise ValidationError("Key (slug) already exists.") from None
 
-            raise ConflictError("Database integrity error")
+            raise ConflictError("Database integrity error") from e
 
     def update_from_data(
         self, army_branch: ArmyBranch, army_branch_data: ArmyBranchUpdate
@@ -49,6 +49,6 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         except IntegrityError as e:
             self.session.rollback()
             if "ix_army_branches_slug" in str(e.orig):
-                raise ValidationError("Key (slug) already exists.")
+                raise ValidationError("Key (slug) already exists.") from None
 
-            raise ConflictError("Database integrity error")
+            raise ConflictError("Database integrity error") from e

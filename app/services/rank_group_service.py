@@ -56,7 +56,7 @@ class RankGroupService(BaseService[RankGroup]):
         existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
         return self.repository.update_from_data(existing_rank_group, rank_group_data)
 
-    def delete_rank_group(self, rank_group_slug: str):
+    def delete_rank_group(self, rank_group_slug: str) -> None:
         """Delete existing RankGroup"""
         existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
         self.repository.delete(existing_rank_group)

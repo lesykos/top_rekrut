@@ -54,7 +54,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         existing_branch = self.get_army_branch_by_slug(army_branch_slug)
         return self.repository.update_from_data(existing_branch, army_branch_data)
 
-    def delete_army_branch(self, army_branch_slug: str):
+    def delete_army_branch(self, army_branch_slug: str) -> None:
         """Delete existing ArmyBranch"""
         existing_branch = self.get_army_branch_by_slug(army_branch_slug)
         self.repository.delete(existing_branch)
