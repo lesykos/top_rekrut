@@ -6,15 +6,15 @@ from app.repositories import ItemRepository
 from .base import BaseService
 
 
-# Service for item business logic.
 class ItemService(BaseService[Item]):
+    """Service for item business logic."""
 
     def __init__(self, session: Session):
         super().__init__(session)
         self.repository = ItemRepository(session)
 
-    # Get item by ID with business logic
     def get_item(self, item_id: int) -> Any:
+        """Get item by ID with business logic."""
         try:
             item = self.repository.get_by_id(item_id)
             if not item:
@@ -23,8 +23,8 @@ class ItemService(BaseService[Item]):
         except Exception as e:
             self._handle_exception(e, f"get_item({item_id})")
 
-    # Get paginated list of items.
     def get_items(self) -> Any:
+        """Get paginated list of items."""
         try:
             items = self.repository.get_all()
             items_public = [ItemPublic.model_validate(item) for item in items]
