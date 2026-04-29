@@ -1,6 +1,6 @@
 from typing import Sequence
-from fastapi import HTTPException
 from sqlmodel import Session
+from app.core.exceptions import NotFoundError
 from app.models.army_branch import (
     ArmyBranch,
     ArmyBranchCreate,
@@ -21,78 +21,40 @@ class ArmyBranchService(BaseService[ArmyBranch]):
 
     def get_army_branch(self, army_branch_id: int) -> ArmyBranch:
         """Get ArmyBranch by ID"""
-        try:
-            army_branch = self.repository.get_by_id(army_branch_id)
-            if not army_branch:
-                raise HTTPException(status_code=404, detail="Army branch not found!")
-            return army_branch
-
-        except HTTPException:
-            raise
-        # Catch everything else (bugs) and handle/log them
-        except Exception as e:
-            self._handle_exception(e, f"get_army_branch({army_branch_id})")
+        army_branch = self.repository.get_by_id(army_branch_id)
+        if army_branch is None:
+            raise NotFoundError(f"Army branch {army_branch_id} not found")
+        return army_branch
 
     def get_army_branch_by_slug(self, army_branch_slug: str) -> ArmyBranch:
         """Get ArmyBranch by slug"""
-        try:
-            army_branch = self.repository.get_by_slug(army_branch_slug)
-            if not army_branch:
-                raise HTTPException(status_code=404, detail="Army branch not found!")
-            return army_branch
-
-        except HTTPException:
-            raise
-        except Exception as e:
-            self._handle_exception(e, f"get_army_branch_by_slug({army_branch_slug})")
+        army_branch = self.repository.get_by_slug(army_branch_slug)
+        if not army_branch:
+            raise NotFoundError(f"Army branch {army_branch_slug} not found")
+        return army_branch
 
     def get_army_branches(self) -> Sequence[ArmyBranch]:
         """Get a list of ArmyBranches"""
-        try:
-            return self.repository.get_all()
-        except Exception as e:
-            self._handle_exception(e, "get_army_branches")
+        return self.repository.get_all()
 
     def get_army_branches_public(self) -> ArmyBranchesPublic:
         """Get a list of public ArmyBranches"""
-        try:
-            army_branches = self.repository.get_all()
-            army_branches_public = [
-                ArmyBranchPublic.model_validate(branch) for branch in army_branches
-            ]
-            return ArmyBranchesPublic(
-                data=army_branches_public, count=len(army_branches_public)
-            )
-        except Exception as e:
-            self._handle_exception(e, "get_army_branches_public")
+        army_branches = self.repository.get_all()
+        public = [ArmyBranchPublic.model_validate(branch) for branch in army_branches]
+        return ArmyBranchesPublic(data=public, count=len(public))
 
     def create_army_branch(self, army_branch_data: ArmyBranchCreate) -> ArmyBranch:
         """Create new ArmyBranch with validation."""
-        try:
-            return self.repository.create_from_data(army_branch_data)
-        except HTTPException:
-            raise
-        except Exception as e:
-            self._handle_exception(e, "create_army_branch")
+        return self.repository.create_from_data(army_branch_data)
 
     def update_army_branch(
         self, army_branch_slug: str, army_branch_data: ArmyBranchUpdate
     ) -> ArmyBranch:
         """Update existing ArmyBranch"""
-        try:
-            existing_branch = self.get_army_branch_by_slug(army_branch_slug)
-            return self.repository.update_from_data(existing_branch, army_branch_data)
-        except HTTPException:
-            raise
-        except Exception as e:
-            self._handle_exception(e, f"update_army_branch({army_branch_slug})")
+        existing_branch = self.get_army_branch_by_slug(army_branch_slug)
+        return self.repository.update_from_data(existing_branch, army_branch_data)
 
     def delete_army_branch(self, army_branch_slug: str):
         """Delete existing ArmyBranch"""
-        try:
-            existing_branch = self.get_army_branch_by_slug(army_branch_slug)
-            self.repository.delete(existing_branch)
-        except HTTPException:
-            raise
-        except Exception as e:
-            self._handle_exception(e, f"delete_army_branch({army_branch_slug})")
+        existing_branch = self.get_army_branch_by_slug(army_branch_slug)
+        self.repository.delete(existing_branch)

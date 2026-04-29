@@ -1,5 +1,7 @@
 from typing import Sequence
 from sqlmodel import select, col
+from sqlalchemy.exc import IntegrityError
+from app.core.exceptions import ValidationError, ConflictError
 from app.models.rank_group import RankGroup, RankGroupCreate, RankGroupUpdate
 from .base import BaseRepository
 
@@ -23,14 +25,30 @@ class RankGroupRepository(BaseRepository[RankGroup]):
 
     def create_from_data(self, rank_group_data: RankGroupCreate) -> RankGroup:
         """Create RankGroup from RankGroupCreate data"""
-        rank_group = RankGroup(**rank_group_data.model_dump())
-        return self.create(rank_group)
+        try:
+            rank_group = RankGroup(**rank_group_data.model_dump())
+            return self.create(rank_group)
+        except IntegrityError as e:
+            self.session.rollback()
+            if "ix_rank_groups_slug" in str(e.orig):
+                raise ValidationError("Key (slug) already exists.")
+
+            raise ConflictError("Database integrity error")
 
     def update_from_data(
         self, rank_group: RankGroup, rank_group_data: RankGroupUpdate
     ) -> RankGroup:
         """Update RankGroup from RankGroupUpdate data"""
-        # exclude_unset - get only fields user provided
-        update_data = rank_group_data.model_dump(exclude_unset=True, exclude_none=True)
-        rank_group.sqlmodel_update(update_data)
-        return self.update(rank_group)
+        try:
+            # exclude_unset - get only fields user provided
+            update_data = rank_group_data.model_dump(
+                exclude_unset=True, exclude_none=True
+            )
+            rank_group.sqlmodel_update(update_data)
+            return self.update(rank_group)
+        except IntegrityError as e:
+            self.session.rollback()
+            if "ix_rank_groups_slug" in str(e.orig):
+                raise ValidationError("Key (slug) already exists.")
+
+            raise ConflictError("Database integrity error")
