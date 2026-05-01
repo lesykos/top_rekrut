@@ -42,8 +42,8 @@ def get_army_branches(
 
 # Show - show army branch by ID
 @router.get("/{id}")
-def get_army_branch_by_id(id: int, session: SessionDep) -> ArmyBranch:
-    return ArmyBranchService(session).get_army_branch(id)
+def get_army_branch_by_id(army_branch_id: int, session: SessionDep) -> ArmyBranch:
+    return ArmyBranchService(session).get_army_branch(army_branch_id)
 
 
 # Show - show army branch by slug
@@ -63,15 +63,17 @@ def create_army_branch(
 # Update - update army branch by id
 @router.put("/{id}", status_code=201)
 def update_army_branch_by_id(
-    id: int, army_branch_data: ArmyBranchUpdate, session: SessionDep
+    army_branch_id: int, army_branch_data: ArmyBranchUpdate, session: SessionDep
 ) -> ArmyBranch:
-    return ArmyBranchService(session).update_army_branch(id, army_branch_data)
+    return ArmyBranchService(session).update_army_branch(
+        army_branch_id, army_branch_data
+    )
 
 
 # Delete - delete army branch
 @router.delete("/{id}")
-def delete_army_branch(id: int, session: SessionDep):
-    ArmyBranchService(session).delete_army_branch(id)
+def delete_army_branch(army_branch_id: int, session: SessionDep):
+    ArmyBranchService(session).delete_army_branch(army_branch_id)
     return {"message": "Army branch deleted successfully!"}
 
 
