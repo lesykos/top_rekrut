@@ -20,7 +20,7 @@ def get_army_branch(slug: str, session: SessionDep) -> ArmyBranch:
 
 
 # Create - create new army branch
-@router.post("/")
+@router.post("/", status_code=201)
 def create_army_branch(
     army_branch_data: ArmyBranchCreate, session: SessionDep
 ) -> ArmyBranch:

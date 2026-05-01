@@ -20,7 +20,7 @@ def get_rank_group(slug: str, session: SessionDep) -> RankGroup:
 
 
 # Create - create new RankGroup
-@router.post("/")
+@router.post("/", status_code=201)
 def create_rank_group(
     rank_group_data: RankGroupCreate, session: SessionDep
 ) -> RankGroup:

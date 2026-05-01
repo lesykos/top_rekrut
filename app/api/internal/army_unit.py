@@ -20,7 +20,7 @@ def get_army_unit(slug: str, session: SessionDep) -> ArmyUnit:
 
 
 # Create - create new ArmyUnit
-@router.post("/")
+@router.post("/", status_code=201)
 def create_army_unit(army_unit_data: ArmyUnitCreate, session: SessionDep) -> ArmyUnit:
     return ArmyUnitService(session).create_army_unit(army_unit_data)
 
