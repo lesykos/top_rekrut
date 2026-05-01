@@ -1,6 +1,6 @@
 from typing import Sequence
 from sqlmodel import Session
-from app.core.exceptions import NotFoundError
+from app.core.exceptions import NotFoundError, BadRequestError
 from app.models.army_branch import (
     ArmyBranch,
     ArmyBranchCreate,
@@ -44,8 +44,17 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         filter_: dict[str, str] | None = None,
     ) -> Sequence[ArmyBranch]:
         """Get a list of ArmyBranches"""
-        offset = range_[0] if range_ else None
-        limit = range_[1] - range_[0] + 1 if range_ else None
+        if range_ is not None:
+            if len(range_) != 2:
+                raise BadRequestError("Invalid query: range must be [start, end].")
+            start, end = range_
+            if start < 0 or end < start:
+                raise BadRequestError("Invalid range bounds.")
+            offset = start
+            limit = end - start + 1
+        else:
+            offset = None
+            limit = None
         return self.repository.get_all(sort, filter_, offset, limit)
 
     def get_army_branches_public(self) -> ArmyBranchesPublic:
