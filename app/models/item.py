@@ -1,11 +1,7 @@
-from datetime import datetime, timezone
-
+from datetime import datetime
 from sqlalchemy import DateTime
 from sqlmodel import Field, SQLModel
-
-
-def get_datetime_utc() -> datetime:
-    return datetime.now(timezone.utc)
+from .utils import get_datetime_utc
 
 
 # Shared properties

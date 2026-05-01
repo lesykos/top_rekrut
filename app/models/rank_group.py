@@ -30,7 +30,7 @@ class RankGroupUpdate(SQLModel):
     position: int | None = Field(default=None, ge=1, le=9)
 
 
-# Database model, db table inferred from class name
+# Database model
 class RankGroup(RankGroupBase, table=True):
     __tablename__ = "rank_groups"  # type: ignore
     id: int | None = Field(default=None, primary_key=True)
