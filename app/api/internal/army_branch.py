@@ -1,5 +1,6 @@
+import json
 from typing import Sequence
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, Query
 from app.api.deps import SessionDep
 from app.models.army_branch import ArmyBranch, ArmyBranchCreate, ArmyBranchUpdate
 from app.services import ArmyBranchService
@@ -9,11 +10,36 @@ router = APIRouter(prefix="/army-branches", tags=["army-branches"])
 
 # Index - show all the army branches
 @router.get("/")
-def get_army_branches(session: SessionDep, response: Response) -> Sequence[ArmyBranch]:
-    army_branches = ArmyBranchService(session).get_army_branches()
-    army_branches_count = len(army_branches)
+def get_army_branches(
+    session: SessionDep,
+    response: Response,
+    sort: str | None = Query(None),
+    range_param: str | None = Query(None, alias="range"),
+    filter_param: str | None = Query(None, alias="filter"),
+) -> Sequence[ArmyBranch]:
+    sort_value = json.loads(sort) if sort else ["position", "ASC"]
+    filter_value = json.loads(filter_param) if filter_param else {}
+    range_value = json.loads(range_param) if range_param else None
+    army_branches = ArmyBranchService(session).get_army_branches(
+        sort=sort_value, range_=range_value, filter_=filter_value
+    )
+    count_army_branches = ArmyBranchService(session).count_army_branches(
+        filter_=filter_value
+    )
+
+    if range_value:
+        start = range_value[0]
+        end = (
+            range_value[1]
+            if range_value[1] < count_army_branches
+            else max(count_army_branches - 1, 0)
+        )
+    else:
+        start = 0
+        end = max(count_army_branches - 1, 0)
+
     response.headers["Content-Range"] = (
-        f"army-branches 0-{army_branches_count}/{army_branches_count}"
+        f"army-branches {start}-{end}/{count_army_branches}"
     )
     return army_branches
 
