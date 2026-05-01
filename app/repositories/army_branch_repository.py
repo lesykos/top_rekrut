@@ -1,5 +1,6 @@
+import ast
 from typing import Sequence
-from sqlmodel import select, col
+from sqlmodel import select, col, func
 from sqlalchemy.exc import IntegrityError
 from app.core.exceptions import ValidationError, ConflictError
 from app.models.army_branch import ArmyBranch, ArmyBranchCreate, ArmyBranchUpdate
@@ -11,11 +12,51 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
     def get_model_class(self) -> type[ArmyBranch]:
         return ArmyBranch
 
-    def get_all(self) -> Sequence[ArmyBranch]:
-        """Get all army branches ordered by position."""
-        return self.session.exec(
-            select(ArmyBranch).order_by(col(ArmyBranch.position).asc())
-        ).all()
+    def count_all(self, filters: dict[str, str] | None = None) -> int:
+        """Count all army branches with optional filters."""
+        query = select(func.count()).select_from(ArmyBranch)
+        if filters:
+            if "ids" in filters:
+                query = query.where(
+                    col(ArmyBranch.id).in_(ast.literal_eval(filters["ids"]))
+                )
+            if "name" in filters:
+                query = query.where(col(ArmyBranch.name).ilike(f'%{filters["name"]}%'))
+        return self.session.exec(query).one()
+
+    def get_all(
+        self,
+        sort: list[str] | None = None,
+        filters: dict[str, str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+    ) -> Sequence[ArmyBranch]:
+        """Get all army branches"""
+        query = select(ArmyBranch)
+        if filters:
+            if "ids" in filters:
+                query = query.where(
+                    col(ArmyBranch.id).in_(ast.literal_eval(filters["ids"]))
+                )
+            if "name" in filters:
+                query = query.where(col(ArmyBranch.name).ilike(f'%{filters["name"]}%'))
+
+        if sort:
+            sort_field, sort_direction = sort
+            column = getattr(ArmyBranch, sort_field)
+            query = query.order_by(
+                col(column).asc()
+                if sort_direction.upper() == "ASC"
+                else col(column).desc()
+            )
+
+        if offset is not None:
+            query = query.offset(offset)
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        return self.session.exec(query).all()
 
     def get_by_slug(self, slug: str) -> ArmyBranch | None:
         """Get army branch by slug."""
