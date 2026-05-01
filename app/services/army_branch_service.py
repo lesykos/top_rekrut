@@ -48,13 +48,20 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         return self.repository.create_from_data(army_branch_data)
 
     def update_army_branch(
+        self, army_branch_id: int, army_branch_data: ArmyBranchUpdate
+    ) -> ArmyBranch:
+        """Update existing ArmyBranch (by ID)"""
+        existing_branch = self.get_army_branch(army_branch_id)
+        return self.repository.update_from_data(existing_branch, army_branch_data)
+
+    def update_army_branch_by_slug(
         self, army_branch_slug: str, army_branch_data: ArmyBranchUpdate
     ) -> ArmyBranch:
-        """Update existing ArmyBranch"""
+        """Update existing ArmyBranch (by slug)"""
         existing_branch = self.get_army_branch_by_slug(army_branch_slug)
         return self.repository.update_from_data(existing_branch, army_branch_data)
 
-    def delete_army_branch(self, army_branch_slug: str) -> None:
+    def delete_army_branch(self, army_branch_id: int) -> None:
         """Delete existing ArmyBranch"""
-        existing_branch = self.get_army_branch_by_slug(army_branch_slug)
+        existing_branch = self.get_army_branch(army_branch_id)
         self.repository.delete(existing_branch)
