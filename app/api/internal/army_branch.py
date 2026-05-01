@@ -2,6 +2,7 @@ import json
 from typing import Sequence
 from fastapi import APIRouter, Response, Query
 from app.api.deps import SessionDep
+from app.core.exceptions import BadRequestError
 from app.models.army_branch import ArmyBranch, ArmyBranchCreate, ArmyBranchUpdate
 from app.services import ArmyBranchService
 
@@ -17,9 +18,13 @@ def get_army_branches(
     range_param: str | None = Query(None, alias="range"),
     filter_param: str | None = Query(None, alias="filter"),
 ) -> Sequence[ArmyBranch]:
-    sort_value = json.loads(sort) if sort else ["position", "ASC"]
-    filter_value = json.loads(filter_param) if filter_param else {}
-    range_value = json.loads(range_param) if range_param else None
+    try:
+        sort_value = json.loads(sort) if sort else ["position", "ASC"]
+        filter_value = json.loads(filter_param) if filter_param else {}
+        range_value = json.loads(range_param) if range_param else None
+    except json.JSONDecodeError as exc:
+        raise BadRequestError(f"Invalid query JSON: {exc.msg}") from None
+
     army_branches = ArmyBranchService(session).get_army_branches(
         sort=sort_value, range_=range_value, filter_=filter_value
     )
