@@ -1,6 +1,10 @@
+from typing import TYPE_CHECKING
 from pydantic import model_validator
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 from slugify import slugify
+
+if TYPE_CHECKING:
+    from .army_unit import ArmyUnit
 
 
 # Shared properties
@@ -31,7 +35,7 @@ class ArmyBranchUpdate(SQLModel):
     position: int | None = Field(default=None, ge=1, le=30)
 
 
-# Database model, db table inferred from class name
+# Database model
 class ArmyBranch(ArmyBranchBase, table=True):
     __tablename__ = "army_branches"  # type: ignore
     id: int | None = Field(default=None, primary_key=True)
@@ -40,6 +44,7 @@ class ArmyBranch(ArmyBranchBase, table=True):
         unique=True,
         nullable=False,
     )
+    army_units: list["ArmyUnit"] = Relationship(back_populates="army_branch")
 
 
 # Properties to return via API

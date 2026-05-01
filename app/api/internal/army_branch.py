@@ -9,21 +9,21 @@ router = APIRouter(prefix="/army-branches", tags=["army-branches"])
 
 # Index - show all the army branches
 @router.get("/")
-def get_army_branches(session: SessionDep) -> Sequence[ArmyBranch] | None:
+def get_army_branches(session: SessionDep) -> Sequence[ArmyBranch]:
     return ArmyBranchService(session).get_army_branches()
 
 
 # Show - show army branch by slug
 @router.get("/{slug}")
-def get_army_branch(slug: str, session: SessionDep) -> ArmyBranch | None:
+def get_army_branch(slug: str, session: SessionDep) -> ArmyBranch:
     return ArmyBranchService(session).get_army_branch_by_slug(slug)
 
 
 # Create - create new army branch
-@router.post("/")
+@router.post("/", status_code=201)
 def create_army_branch(
     army_branch_data: ArmyBranchCreate, session: SessionDep
-) -> ArmyBranch | None:
+) -> ArmyBranch:
     return ArmyBranchService(session).create_army_branch(army_branch_data)
 
 
@@ -31,7 +31,7 @@ def create_army_branch(
 @router.patch("/{slug}")
 def update_army_branch(
     slug: str, army_branch_data: ArmyBranchUpdate, session: SessionDep
-) -> ArmyBranch | None:
+) -> ArmyBranch:
     return ArmyBranchService(session).update_army_branch(slug, army_branch_data)
 
 
