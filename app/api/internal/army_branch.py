@@ -32,16 +32,7 @@ def get_army_branches(
         filter_=filter_value
     )
 
-    if range_value:
-        start = range_value[0]
-        end = (
-            range_value[1]
-            if range_value[1] < count_army_branches
-            else max(count_army_branches - 1, 0)
-        )
-    else:
-        start = 0
-        end = max(count_army_branches - 1, 0)
+    start, end = resolve_start_end(range_value, count_army_branches)
 
     response.headers["Content-Range"] = (
         f"army-branches {start}-{end}/{count_army_branches}"
@@ -77,15 +68,24 @@ def update_army_branch_by_id(
     return ArmyBranchService(session).update_army_branch(id, army_branch_data)
 
 
-# @router.patch("/{slug}")
-# def update_army_branch_by_slug(
-#     slug: str, army_branch_data: ArmyBranchUpdate, session: SessionDep
-# ) -> ArmyBranch:
-#     return ArmyBranchService(session).update_army_branch_by_slug(slug, army_branch_data)
-
-
 # Delete - delete army branch
 @router.delete("/{id}")
 def delete_army_branch(id: int, session: SessionDep):
     ArmyBranchService(session).delete_army_branch(id)
     return {"message": "Army branch deleted successfully!"}
+
+
+def resolve_start_end(
+    range_value: list[int] | None, count_army_branches: int
+) -> tuple[int, int]:
+    if range_value:
+        start = range_value[0]
+        end = (
+            range_value[1]
+            if range_value[1] < count_army_branches
+            else max(count_army_branches - 1, 0)
+        )
+    else:
+        start = 0
+        end = max(count_army_branches - 1, 0)
+    return (start, end)
