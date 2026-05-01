@@ -9,21 +9,19 @@ router = APIRouter(prefix="/army-units", tags=["army-units"])
 
 # Index - show all ArmyUnits
 @router.get("/")
-def get_army_units(session: SessionDep) -> Sequence[ArmyUnit] | None:
+def get_army_units(session: SessionDep) -> Sequence[ArmyUnit]:
     return ArmyUnitService(session).get_army_units()
 
 
 # Show - show ArmyUnit by slug
 @router.get("/{slug}")
-def get_army_unit(slug: str, session: SessionDep) -> ArmyUnit | None:
+def get_army_unit(slug: str, session: SessionDep) -> ArmyUnit:
     return ArmyUnitService(session).get_army_unit_by_slug(slug)
 
 
 # Create - create new ArmyUnit
 @router.post("/")
-def create_army_unit(
-    army_unit_data: ArmyUnitCreate, session: SessionDep
-) -> ArmyUnit | None:
+def create_army_unit(army_unit_data: ArmyUnitCreate, session: SessionDep) -> ArmyUnit:
     return ArmyUnitService(session).create_army_unit(army_unit_data)
 
 
@@ -31,7 +29,7 @@ def create_army_unit(
 @router.patch("/{slug}")
 def update_army_unit(
     slug: str, army_unit_data: ArmyUnitUpdate, session: SessionDep
-) -> ArmyUnit | None:
+) -> ArmyUnit:
     return ArmyUnitService(session).update_army_unit(slug, army_unit_data)
 
 

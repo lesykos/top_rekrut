@@ -9,13 +9,13 @@ router = APIRouter(prefix="/rank-groups", tags=["rank-groups"])
 
 # Index - show all RankGroups
 @router.get("/")
-def get_rank_groups(session: SessionDep) -> Sequence[RankGroup] | None:
+def get_rank_groups(session: SessionDep) -> Sequence[RankGroup]:
     return RankGroupService(session).get_rank_groups()
 
 
 # Show - show RankGroup by slug
 @router.get("/{slug}")
-def get_rank_group(slug: str, session: SessionDep) -> RankGroup | None:
+def get_rank_group(slug: str, session: SessionDep) -> RankGroup:
     return RankGroupService(session).get_rank_group_by_slug(slug)
 
 
@@ -23,7 +23,7 @@ def get_rank_group(slug: str, session: SessionDep) -> RankGroup | None:
 @router.post("/")
 def create_rank_group(
     rank_group_data: RankGroupCreate, session: SessionDep
-) -> RankGroup | None:
+) -> RankGroup:
     return RankGroupService(session).create_rank_group(rank_group_data)
 
 
@@ -31,7 +31,7 @@ def create_rank_group(
 @router.patch("/{slug}")
 def update_rank_group(
     slug: str, rank_group_data: RankGroupUpdate, session: SessionDep
-) -> RankGroup | None:
+) -> RankGroup:
     return RankGroupService(session).update_rank_group(slug, rank_group_data)
 
 
