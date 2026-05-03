@@ -18,7 +18,7 @@ class ArmyUnitRepository(BaseRepository[ArmyUnit]):
         query = select(func.count()).select_from(ArmyUnit)
         if filters:
             if "id" in filters:
-                query = query.where(col(ArmyUnit.id).in_(["id"]))
+                query = query.where(col(ArmyUnit.id).in_(filters["id"]))
             if "name" in filters:
                 query = query.where(col(ArmyUnit.name).ilike(f'%{filters["name"]}%'))
         return self.session.exec(query).one()
