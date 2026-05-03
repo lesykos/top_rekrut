@@ -12,8 +12,9 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - Index route supports filtering, sorting, pagination and returns total counts via Content-Range header.
 - Centralized decoding/validation of list query params and consistent pagination across list endpoints.
 - CORS enabled to allow cross-origin requests.
-- PostgreSQL database integration with SQLModel ORM
-- Auth0 authentication support
+- PostgreSQL database integration with SQLModel ORM.
+- Database migration by Alembic.
+- Auth0 authentication support.
 
 ## Tech Stack
 
@@ -21,6 +22,7 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - **FastAPI** - Web framework for building APIs
 - **PostgreSQL** - Relational database
 - **SQLModel** - ORM based on SQLAlchemy and Pydantic
+- **Alembic** - database migration
 - **Auth0** - User Authentication
 
 ## Installation & Setup
