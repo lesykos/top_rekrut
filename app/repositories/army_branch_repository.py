@@ -1,4 +1,3 @@
-import ast
 from typing import Sequence
 from sqlmodel import select, col, func
 from sqlalchemy.exc import IntegrityError
@@ -16,10 +15,8 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         """Count all army branches with optional filters."""
         query = select(func.count()).select_from(ArmyBranch)
         if filters:
-            if "ids" in filters:
-                query = query.where(
-                    col(ArmyBranch.id).in_(ast.literal_eval(filters["ids"]))
-                )
+            if "id" in filters:
+                query = query.where(col(ArmyBranch.id).in_(filters["id"]))
             if "name" in filters:
                 query = query.where(col(ArmyBranch.name).ilike(f'%{filters["name"]}%'))
         return self.session.exec(query).one()
@@ -34,10 +31,8 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         """Get all army branches"""
         query = select(ArmyBranch)
         if filters:
-            if "ids" in filters:
-                query = query.where(
-                    col(ArmyBranch.id).in_(ast.literal_eval(filters["ids"]))
-                )
+            if "id" in filters:
+                query = query.where(col(ArmyBranch.id).in_(filters["id"]))
             if "name" in filters:
                 query = query.where(col(ArmyBranch.name).ilike(f'%{filters["name"]}%'))
 

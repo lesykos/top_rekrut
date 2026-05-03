@@ -1,5 +1,5 @@
 from typing import Sequence
-from sqlmodel import select, col
+from sqlmodel import select, col, func
 from sqlalchemy.exc import IntegrityError
 from app.core.exceptions import ValidationError, ConflictError
 from app.models.army_unit import ArmyUnit, ArmyUnitCreate, ArmyUnitUpdate
@@ -13,12 +13,47 @@ class ArmyUnitRepository(BaseRepository[ArmyUnit]):
     def get_model_class(self) -> type[ArmyUnit]:
         return ArmyUnit
 
-    def get_all(self) -> Sequence[ArmyUnit]:
-        """Get all ArmyUnits ordered by ID."""
-        #
-        return self.session.exec(
-            select(ArmyUnit).order_by(col(ArmyUnit.id).desc())
-        ).all()
+    def count_all(self, filters: dict[str, str] | None = None) -> int:
+        """Count all ArmyUnits with optional filters."""
+        query = select(func.count()).select_from(ArmyUnit)
+        if filters:
+            if "id" in filters:
+                query = query.where(col(ArmyUnit.id).in_(["id"]))
+            if "name" in filters:
+                query = query.where(col(ArmyUnit.name).ilike(f'%{filters["name"]}%'))
+        return self.session.exec(query).one()
+
+    def get_all(
+        self,
+        sort: list[str] | None = None,
+        filters: dict[str, str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+    ) -> Sequence[ArmyUnit]:
+        """Get all ArmyUnits"""
+        query = select(ArmyUnit)
+        if filters:
+            if "id" in filters:
+                query = query.where(col(ArmyUnit.id).in_(filters["id"]))
+            if "name" in filters:
+                query = query.where(col(ArmyUnit.name).ilike(f'%{filters["name"]}%'))
+
+        if sort:
+            sort_field, sort_direction = sort
+            column = getattr(ArmyUnit, sort_field)
+            query = query.order_by(
+                col(column).asc()
+                if sort_direction.upper() == "ASC"
+                else col(column).desc()
+            )
+
+        if offset is not None:
+            query = query.offset(offset)
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        return self.session.exec(query).all()
 
     def get_by_slug(self, slug: str) -> ArmyUnit | None:
         """Get ArmyUnit by slug."""

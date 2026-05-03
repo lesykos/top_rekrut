@@ -1,4 +1,3 @@
-import ast
 from typing import Sequence
 from sqlmodel import select, col, func
 from sqlalchemy.exc import IntegrityError
@@ -16,10 +15,8 @@ class RankGroupRepository(BaseRepository[RankGroup]):
         """Count all RankGroups with optional filters."""
         query = select(func.count()).select_from(RankGroup)
         if filters:
-            if "ids" in filters:
-                query = query.where(
-                    col(RankGroup.id).in_(ast.literal_eval(filters["ids"]))
-                )
+            if "id" in filters:
+                query = query.where(col(RankGroup.id).in_(filters["id"]))
             if "name" in filters:
                 query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
         return self.session.exec(query).one()
@@ -34,10 +31,8 @@ class RankGroupRepository(BaseRepository[RankGroup]):
         """Get all RankGroups"""
         query = select(RankGroup)
         if filters:
-            if "ids" in filters:
-                query = query.where(
-                    col(RankGroup.id).in_(ast.literal_eval(filters["ids"]))
-                )
+            if "id" in filters:
+                query = query.where(col(RankGroup.id).in_(filters["id"]))
             if "name" in filters:
                 query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
 
