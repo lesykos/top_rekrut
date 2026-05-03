@@ -1,5 +1,6 @@
+import ast
 from typing import Sequence
-from sqlmodel import select, col
+from sqlmodel import select, col, func
 from sqlalchemy.exc import IntegrityError
 from app.core.exceptions import ValidationError, ConflictError
 from app.models.rank_group import RankGroup, RankGroupCreate, RankGroupUpdate
@@ -11,11 +12,51 @@ class RankGroupRepository(BaseRepository[RankGroup]):
     def get_model_class(self) -> type[RankGroup]:
         return RankGroup
 
-    def get_all(self) -> Sequence[RankGroup]:
-        """Get all RankGroups ordered by position."""
-        return self.session.exec(
-            select(RankGroup).order_by(col(RankGroup.position).asc())
-        ).all()
+    def count_all(self, filters: dict[str, str] | None = None) -> int:
+        """Count all RankGroups with optional filters."""
+        query = select(func.count()).select_from(RankGroup)
+        if filters:
+            if "ids" in filters:
+                query = query.where(
+                    col(RankGroup.id).in_(ast.literal_eval(filters["ids"]))
+                )
+            if "name" in filters:
+                query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
+        return self.session.exec(query).one()
+
+    def get_all(
+        self,
+        sort: list[str] | None = None,
+        filters: dict[str, str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+    ) -> Sequence[RankGroup]:
+        """Get all RankGroups"""
+        query = select(RankGroup)
+        if filters:
+            if "ids" in filters:
+                query = query.where(
+                    col(RankGroup.id).in_(ast.literal_eval(filters["ids"]))
+                )
+            if "name" in filters:
+                query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
+
+        if sort:
+            sort_field, sort_direction = sort
+            column = getattr(RankGroup, sort_field)
+            query = query.order_by(
+                col(column).asc()
+                if sort_direction.upper() == "ASC"
+                else col(column).desc()
+            )
+
+        if offset is not None:
+            query = query.offset(offset)
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        return self.session.exec(query).all()
 
     def get_by_slug(self, slug: str) -> RankGroup | None:
         """Get RankGroup by slug."""

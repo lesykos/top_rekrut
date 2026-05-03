@@ -1,6 +1,7 @@
 from typing import Sequence
 from sqlmodel import Session
-from app.core.exceptions import NotFoundError, BadRequestError
+from app.core.exceptions import NotFoundError
+from app.api.utils import get_offset_limit_from_range
 from app.models.army_branch import (
     ArmyBranch,
     ArmyBranchCreate,
@@ -20,7 +21,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         self.repository = ArmyBranchRepository(session)
 
     def count_army_branches(self, filter_: dict[str, str] | None = None) -> int:
-        """Count army branches with optional filters."""
+        """Count ArmyBranches with optional filters."""
         return self.repository.count_all(filter_)
 
     def get_army_branch(self, army_branch_id: int) -> ArmyBranch:
@@ -44,17 +45,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         filter_: dict[str, str] | None = None,
     ) -> Sequence[ArmyBranch]:
         """Get a list of ArmyBranches"""
-        if range_ is not None:
-            if len(range_) != 2:
-                raise BadRequestError("Invalid query: range must be [start, end].")
-            start, end = range_
-            if start < 0 or end < start:
-                raise BadRequestError("Invalid range bounds.")
-            offset = start
-            limit = end - start + 1
-        else:
-            offset = None
-            limit = None
+        offset, limit = get_offset_limit_from_range(range_)
         return self.repository.get_all(sort, filter_, offset, limit)
 
     def get_army_branches_public(self) -> ArmyBranchesPublic:

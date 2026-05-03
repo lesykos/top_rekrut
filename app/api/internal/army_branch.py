@@ -5,11 +5,12 @@ from app.api.deps import SessionDep
 from app.core.exceptions import BadRequestError
 from app.models.army_branch import ArmyBranch, ArmyBranchCreate, ArmyBranchUpdate
 from app.services import ArmyBranchService
+from ..utils import resolve_start_end_from_range
 
 router = APIRouter(prefix="/army-branches", tags=["army-branches"])
 
 
-# Index - show all the army branches
+# Index - show all ArmyBranch
 @router.get("/")
 def get_army_branches(
     session: SessionDep,
@@ -32,7 +33,7 @@ def get_army_branches(
         filter_=filter_value
     )
 
-    start, end = resolve_start_end(range_value, count_army_branches)
+    start, end = resolve_start_end_from_range(range_value, count_army_branches)
 
     response.headers["Content-Range"] = (
         f"army-branches {start}-{end}/{count_army_branches}"
@@ -41,7 +42,7 @@ def get_army_branches(
 
 
 # Show - show army branch by ID
-@router.get("/{id}")
+@router.get("/{army_branch_id}")
 def get_army_branch_by_id(army_branch_id: int, session: SessionDep) -> ArmyBranch:
     return ArmyBranchService(session).get_army_branch(army_branch_id)
 
@@ -61,7 +62,7 @@ def create_army_branch(
 
 
 # Update - update army branch by id
-@router.put("/{id}", status_code=201)
+@router.put("/{army_branch_id}", status_code=201)
 def update_army_branch_by_id(
     army_branch_id: int, army_branch_data: ArmyBranchUpdate, session: SessionDep
 ) -> ArmyBranch:
@@ -71,23 +72,7 @@ def update_army_branch_by_id(
 
 
 # Delete - delete army branch
-@router.delete("/{id}")
+@router.delete("/{army_branch_id}")
 def delete_army_branch(army_branch_id: int, session: SessionDep):
     ArmyBranchService(session).delete_army_branch(army_branch_id)
     return {"message": "Army branch deleted successfully!"}
-
-
-def resolve_start_end(
-    range_value: list[int] | None, count_army_branches: int
-) -> tuple[int, int]:
-    if range_value:
-        start = range_value[0]
-        end = (
-            range_value[1]
-            if range_value[1] < count_army_branches
-            else max(count_army_branches - 1, 0)
-        )
-    else:
-        start = 0
-        end = max(count_army_branches - 1, 0)
-    return (start, end)
