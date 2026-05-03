@@ -46,6 +46,8 @@ class ArmyUnitRepository(BaseRepository[ArmyUnit]):
                 if sort_direction.upper() == "ASC"
                 else col(column).desc()
             )
+        else:
+            query = query.order_by(col(ArmyUnit.id).asc())
 
         if offset is not None:
             query = query.offset(offset)

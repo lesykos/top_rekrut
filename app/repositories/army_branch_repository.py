@@ -44,6 +44,8 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
                 if sort_direction.upper() == "ASC"
                 else col(column).desc()
             )
+        else:
+            query = query.order_by(col(ArmyBranch.position).asc())
 
         if offset is not None:
             query = query.offset(offset)

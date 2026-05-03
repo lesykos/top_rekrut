@@ -1,11 +1,12 @@
-import json
 from typing import Sequence
 from fastapi import APIRouter, Response, Query
 from app.api.deps import SessionDep
-from app.core.exceptions import BadRequestError
+from app.api.utils import (
+    resolve_start_end_from_range,
+    decode_and_validate_query_params,
+)
 from app.models.rank_group import RankGroup, RankGroupCreate, RankGroupUpdate
 from app.services import RankGroupService
-from ..utils import resolve_start_end_from_range
 
 router = APIRouter(prefix="/rank-groups", tags=["rank-groups"])
 
@@ -19,21 +20,20 @@ def get_rank_groups(
     range_param: str | None = Query(None, alias="range"),
     filter_param: str | None = Query(None, alias="filter"),
 ) -> Sequence[RankGroup]:
-    try:
-        sort_value = json.loads(sort) if sort else ["position", "ASC"]
-        filter_value = json.loads(filter_param) if filter_param else {}
-        range_value = json.loads(range_param) if range_param else None
-    except json.JSONDecodeError as exc:
-        raise BadRequestError(f"Invalid query JSON: {exc.msg}") from None
+    decoded_args = decode_and_validate_query_params(sort, range_param, filter_param)
 
     rank_groups = RankGroupService(session).get_rank_groups(
-        sort=sort_value, range_=range_value, filter_=filter_value
+        sort=decoded_args["sort_value"],
+        range_=decoded_args["range_value"],
+        filter_=decoded_args["filter_value"],
     )
     count_rank_groups = RankGroupService(session).count_rank_groups(
-        filter_=filter_value
+        decoded_args["filter_value"]
     )
 
-    start, end = resolve_start_end_from_range(range_value, count_rank_groups)
+    start, end = resolve_start_end_from_range(
+        decoded_args["range_value"], count_rank_groups
+    )
 
     response.headers["Content-Range"] = f"rank-groups {start}-{end}/{count_rank_groups}"
     return rank_groups

@@ -1,9 +1,10 @@
-import json
 from typing import Sequence
 from fastapi import APIRouter, Response, Query
 from app.api.deps import SessionDep
-from app.api.utils import resolve_start_end_from_range
-from app.core.exceptions import BadRequestError
+from app.api.utils import (
+    resolve_start_end_from_range,
+    decode_and_validate_query_params,
+)
 from app.models.army_unit import ArmyUnit, ArmyUnitCreate, ArmyUnitUpdate
 from app.services import ArmyUnitService
 
@@ -19,19 +20,20 @@ def get_army_units(
     range_param: str | None = Query(None, alias="range"),
     filter_param: str | None = Query(None, alias="filter"),
 ) -> Sequence[ArmyUnit]:
-    try:
-        sort_value = json.loads(sort) if sort else ["id", "DESC"]
-        filter_value = json.loads(filter_param) if filter_param else {}
-        range_value = json.loads(range_param) if range_param else None
-    except json.JSONDecodeError as exc:
-        raise BadRequestError(f"Invalid query JSON: {exc.msg}") from None
+    decoded_args = decode_and_validate_query_params(sort, range_param, filter_param)
 
     army_units = ArmyUnitService(session).get_army_units(
-        sort=sort_value, range_=range_value, filter_=filter_value
+        sort=decoded_args["sort_value"],
+        range_=decoded_args["range_value"],
+        filter_=decoded_args["filter_value"],
     )
-    count_army_units = ArmyUnitService(session).count_army_units(filter_=filter_value)
+    count_army_units = ArmyUnitService(session).count_army_units(
+        decoded_args["filter_value"]
+    )
 
-    start, end = resolve_start_end_from_range(range_value, count_army_units)
+    start, end = resolve_start_end_from_range(
+        decoded_args["range_value"], count_army_units
+    )
 
     response.headers["Content-Range"] = f"army-units {start}-{end}/{count_army_units}"
     return army_units

@@ -44,6 +44,8 @@ class RankGroupRepository(BaseRepository[RankGroup]):
                 if sort_direction.upper() == "ASC"
                 else col(column).desc()
             )
+        else:
+            query = query.order_by(col(RankGroup.position).asc())
 
         if offset is not None:
             query = query.offset(offset)
