@@ -5,9 +5,11 @@ def resolve_start_end_from_range(
     range_value: list[int] | None, all_counted: int
 ) -> tuple[int, int]:
     max_index = max(0, all_counted - 1)
-    if range_value:
+    if range_value is not None:
         if len(range_value) != 2:
             raise BadRequestError("Invalid query: range must be [start, end].")
+        if not all(isinstance(v, int) for v in range_value):
+            raise BadRequestError("Invalid query: range values must be integers.")
         start = min(max(0, range_value[0]), max_index)
         end = min(max(start, range_value[1]), max_index)
     else:
