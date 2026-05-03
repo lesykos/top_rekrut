@@ -15,6 +15,7 @@ def decode_and_validate_query_params(sort, range_param, filter_param):
             isinstance(sort_value, list)
             and len(sort_value) == 2
             and all(isinstance(v, str) for v in sort_value)
+            and sort_value[1].upper() in {"ASC", "DESC"}
         ):
             raise BadRequestError(
                 "Invalid query: sort must be [field, ASC|DESC]."
@@ -23,8 +24,12 @@ def decode_and_validate_query_params(sort, range_param, filter_param):
     if not isinstance(filter_value, dict):
         raise BadRequestError("Invalid query: filter must be an object.") from None
 
-    if "id" in filter_value and not isinstance(filter_value["id"], list):
-        raise BadRequestError("Invalid query: filter.id must be list[int].") from None
+    if "id" in filter_value:
+        ids = filter_value["id"]
+        if not (isinstance(ids, list) and all(isinstance(v, int) for v in ids)):
+            raise BadRequestError(
+                "Invalid query: filter.id must be list[int]."
+            ) from None
 
     if range_value is not None:
         if not (
