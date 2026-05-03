@@ -1,6 +1,7 @@
 from typing import Sequence
 from sqlmodel import Session
-from app.core.exceptions import NotFoundError, BadRequestError
+from app.core.exceptions import NotFoundError
+from app.api.utils import get_offset_limit_from_range
 from app.models.rank_group import (
     RankGroup,
     RankGroupCreate,
@@ -44,17 +45,7 @@ class RankGroupService(BaseService[RankGroup]):
         filter_: dict[str, str] | None = None,
     ) -> Sequence[RankGroup]:
         """Get a list of RankGroups"""
-        if range_ is not None:
-            if len(range_) != 2:
-                raise BadRequestError("Invalid query: range must be [start, end].")
-            start, end = range_
-            if start < 0 or end < start:
-                raise BadRequestError("Invalid range bounds.")
-            offset = start
-            limit = end - start + 1
-        else:
-            offset = None
-            limit = None
+        offset, limit = get_offset_limit_from_range(range_)
         return self.repository.get_all(sort, filter_, offset, limit)
 
     def get_rank_groups_public(self) -> RankGroupsPublic:
