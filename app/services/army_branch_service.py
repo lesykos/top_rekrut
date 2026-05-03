@@ -20,7 +20,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         self.repository = ArmyBranchRepository(session)
 
     def count_army_branches(self, filter_: dict[str, str] | None = None) -> int:
-        """Count army branches with optional filters."""
+        """Count ArmyBranches with optional filters."""
         return self.repository.count_all(filter_)
 
     def get_army_branch(self, army_branch_id: int) -> ArmyBranch:

@@ -1,6 +1,6 @@
 from typing import Sequence
 from sqlmodel import Session
-from app.core.exceptions import NotFoundError
+from app.core.exceptions import NotFoundError, BadRequestError
 from app.models.rank_group import (
     RankGroup,
     RankGroupCreate,
@@ -19,6 +19,10 @@ class RankGroupService(BaseService[RankGroup]):
         super().__init__(session)
         self.repository = RankGroupRepository(session)
 
+    def count_rank_groups(self, filter_: dict[str, str] | None = None) -> int:
+        """Count RankGroups with optional filters."""
+        return self.repository.count_all(filter_)
+
     def get_rank_group(self, rank_group_id: int) -> RankGroup:
         """Get RankGroup by ID"""
         rank_group = self.repository.get_by_id(rank_group_id)
@@ -33,9 +37,25 @@ class RankGroupService(BaseService[RankGroup]):
             raise NotFoundError(f"Rank group {rank_group_slug} not found")
         return rank_group
 
-    def get_rank_groups(self) -> Sequence[RankGroup]:
+    def get_rank_groups(
+        self,
+        sort: list[str] | None = None,
+        range_: list[int] | None = None,
+        filter_: dict[str, str] | None = None,
+    ) -> Sequence[RankGroup]:
         """Get a list of RankGroups"""
-        return self.repository.get_all()
+        if range_ is not None:
+            if len(range_) != 2:
+                raise BadRequestError("Invalid query: range must be [start, end].")
+            start, end = range_
+            if start < 0 or end < start:
+                raise BadRequestError("Invalid range bounds.")
+            offset = start
+            limit = end - start + 1
+        else:
+            offset = None
+            limit = None
+        return self.repository.get_all(sort, filter_, offset, limit)
 
     def get_rank_groups_public(self) -> RankGroupsPublic:
         """Get a list of public RankGroups"""
@@ -50,13 +70,20 @@ class RankGroupService(BaseService[RankGroup]):
         return self.repository.create_from_data(rank_group_data)
 
     def update_rank_group(
+        self, rank_group_id: int, rank_group_data: RankGroupUpdate
+    ) -> RankGroup:
+        """Update existing RankGroup (by ID)"""
+        existing_rank_group = self.get_rank_group(rank_group_id)
+        return self.repository.update_from_data(existing_rank_group, rank_group_data)
+
+    def update_rank_group_y_slug(
         self, rank_group_slug: str, rank_group_data: RankGroupUpdate
     ) -> RankGroup:
         """Update existing RankGroup"""
         existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
         return self.repository.update_from_data(existing_rank_group, rank_group_data)
 
-    def delete_rank_group(self, rank_group_slug: str) -> None:
+    def delete_rank_group(self, rank_group_id: int) -> None:
         """Delete existing RankGroup"""
-        existing_rank_group = self.get_rank_group_by_slug(rank_group_slug)
+        existing_rank_group = self.get_rank_group(rank_group_id)
         self.repository.delete(existing_rank_group)

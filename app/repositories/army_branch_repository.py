@@ -59,7 +59,7 @@ class ArmyBranchRepository(BaseRepository[ArmyBranch]):
         return self.session.exec(query).all()
 
     def get_by_slug(self, slug: str) -> ArmyBranch | None:
-        """Get army branch by slug."""
+        """Get ArmyBranch by slug."""
         return self.session.exec(
             select(ArmyBranch).where(ArmyBranch.slug == slug)
         ).first()
