@@ -62,10 +62,10 @@ class VacancyRepository(BaseRepository[Vacancy]):
 
     def admin_query_filters(self, query, filters):
         if filters:
-            for ids in ["id, army_unit_id", "rank_group_id"]:
-                if ids in filters:
-                    column = getattr(Vacancy, ids)
-                    query = query.where(col(column).in_(filters["id"]))
+            for field in ["id", "army_unit_id", "rank_group_id"]:
+                if field in filters:
+                    column = getattr(Vacancy, field)
+                    query = query.where(col(column).in_(filters[field]))
             if "name" in filters:
                 query = query.where(col(Vacancy.name).ilike(f'%{filters["name"]}%'))
             if "service_type" in filters:
