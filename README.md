@@ -100,8 +100,8 @@ Base URL: `http://localhost:8000/api`
 
 No authentication required. Used for fetching public data.
 
-- `GET /vacancies` - Get a list of vacancies
-- `GET /army-units` - Get a list of army units
+- `GET /vacancies` - Get a list of vacancies (support sort, range and filter query params)
+- `GET /army-units` - Get a list of army units (support sort, range and filter query params)
 - `GET /army-branches` - Get a list of army branches
 - `GET /rank-groups` - Get a list of rank groups
 
