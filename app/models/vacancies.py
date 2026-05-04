@@ -52,12 +52,12 @@ class VacancyCreate(VacancyBase):
 
 
 class VacancyUpdate(SQLModel):
-    name: str | None = Field(default=None)
-    slug: str | None = Field(default=None)
-    description: str | None = Field(default=None)
-    responsibilities: str | None = Field(default=None)
-    requirements: str | None = Field(default=None)
-    conditions: str | None = Field(default=None)
+    name: str | None = Field(default=None, min_length=1, max_length=255)
+    slug: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=1500)
+    responsibilities: str | None = Field(default=None, max_length=1500)
+    requirements: str | None = Field(default=None, max_length=1500)
+    conditions: str | None = Field(default=None, max_length=1500)
     service_type: VacancyServiceType | None = Field(default=None)
     army_unit_id: int | None = Field(default=None)
     rank_group_id: int | None = Field(default=None)
