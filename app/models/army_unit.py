@@ -79,8 +79,12 @@ class ArmyUnit(ArmyUnitBase, table=True):
     # vacancies: Optional["Vacancy"] = Relationship(back_populates="army_units")
 
 
-# Properties to return via API
-class ArmyUnitPublic(ArmyUnitBase):
+# Properties to return via public API
+class ArmyUnitPublic(SQLModel):
+    name: str
+    slug: str
+    description: str | None
+    website: HttpUrl | None
     army_branch_id: int | None
 
 

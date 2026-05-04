@@ -44,11 +44,12 @@ class ArmyBranch(ArmyBranchBase, table=True):
     army_units: list["ArmyUnit"] = Relationship(back_populates="army_branch")
 
 
-# Properties to return via API
-class ArmyBranchPublic(ArmyBranchBase):
-    pass
+# Properties to return via public API
+class ArmyBranchPublic(SQLModel):
+    name: str
+    slug: str
+    position: int
 
 
 class ArmyBranchesPublic(SQLModel):
     data: list[ArmyBranchPublic]
-    count: int
