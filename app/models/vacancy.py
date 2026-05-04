@@ -88,3 +88,11 @@ class Vacancy(VacancyBase, table=True):
         sa_type=TIMESTAMP(timezone=True),  # type: ignore
     )
     # army_unit: Optional["ArmyUnit"] = Relationship(back_populates="vacancies")
+
+
+class VacancyPublic(Vacancy):
+    pass
+
+
+class VacanciesPublic(SQLModel):
+    data: list[VacancyPublic]
