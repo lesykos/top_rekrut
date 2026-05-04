@@ -8,6 +8,8 @@ from .utils import get_datetime_utc, generate_slug_from_name
 if TYPE_CHECKING:
     from .army_branch import ArmyBranch
 
+    # from .vacancy import Vacancy
+
 
 # Shared properties
 class ArmyUnitBase(SQLModel):
@@ -74,3 +76,13 @@ class ArmyUnit(ArmyUnitBase, table=True):
         default=None, foreign_key="army_branches.id", ondelete="SET NULL", index=True
     )
     army_branch: Optional["ArmyBranch"] = Relationship(back_populates="army_units")
+    # vacancies: Optional["Vacancy"] = Relationship(back_populates="army_units")
+
+
+# Properties to return via API
+class ArmyUnitPublic(ArmyUnitBase):
+    army_branch_id: int | None
+
+
+class ArmyUnitsPublic(SQLModel):
+    data: list[ArmyUnitPublic]

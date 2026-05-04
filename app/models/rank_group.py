@@ -45,4 +45,3 @@ class RankGroupPublic(RankGroupBase):
 
 class RankGroupsPublic(SQLModel):
     data: list[RankGroupPublic]
-    count: int
