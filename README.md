@@ -9,8 +9,9 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - The Model-Service-Repository (MSR) pattern to separate data access, business logic, and API routing.
 - RESTful API with structured endpoints.
 - Retrieve and manage army units, branches, and rank groups.
-- Index route supports filtering, sorting, pagination and returns total counts via Content-Range header.
+- Filtering and Pagination: Index routes support filtering, sorting, pagination and returns total counts via Content-Range header.
 - Centralized decoding/validation of list query params and consistent pagination across list endpoints.
+- Error Handling and Validation with global exception handlers.
 - CORS enabled to allow cross-origin requests.
 - PostgreSQL database integration with SQLModel ORM.
 - Database migration by Alembic.
