@@ -9,11 +9,13 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - The Model-Service-Repository (MSR) pattern to separate data access, business logic, and API routing.
 - RESTful API with structured endpoints.
 - Retrieve and manage army units, branches, and rank groups.
-- Index route supports filtering, sorting, pagination and returns total counts via Content-Range header.
+- Filtering and Pagination: Index routes support filtering, sorting, pagination and returns total counts via Content-Range header.
 - Centralized decoding/validation of list query params and consistent pagination across list endpoints.
+- Error Handling and Validation with global exception handlers.
 - CORS enabled to allow cross-origin requests.
 - PostgreSQL database integration with SQLModel ORM.
 - Database migration by Alembic.
+- **pytest** as the testing framework: Unit Tests, Integration Tests, API Tests.
 - Auth0 authentication support.
 
 ## Tech Stack
@@ -24,6 +26,25 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - **SQLModel** - ORM based on SQLAlchemy and Pydantic
 - **Alembic** - database migration
 - **Auth0** - User Authentication
+
+## Project Structure
+
+The project is organized into the following main directories:
+```
+├── app
+│   ├── main.py         # application entrypoint
+│   ├── alembic         # migration scripts
+│   ├── api             # router
+│   │   ├── routers     # public API route definitions
+│   │   └── internal    # admin endpoints and protected routes.
+│   ├── core            # configuration, database setup
+│   ├── models          # SQLModel data models, validation, and schemas
+│   ├── repositories    # DB access layer for CRUD operations
+│   └── services        # business logic layer that orchestrates repositories and model operations
+├── tests               # tests
+```
+
+Each section separates concerns so the API, database models, business logic, and repository access are easy to maintain and extend.
 
 ## Installation & Setup
 
