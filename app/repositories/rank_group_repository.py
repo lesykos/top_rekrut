@@ -14,11 +14,7 @@ class RankGroupRepository(BaseRepository[RankGroup]):
     def count_all(self, filters: dict[str, str] | None = None) -> int:
         """Count all RankGroups with optional filters."""
         query = select(func.count()).select_from(RankGroup)
-        if filters:
-            if "id" in filters:
-                query = query.where(col(RankGroup.id).in_(filters["id"]))
-            if "name" in filters:
-                query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
+        query = self.admin_query_filters(query, filters)
         return self.session.exec(query).one()
 
     def get_all(
@@ -30,22 +26,8 @@ class RankGroupRepository(BaseRepository[RankGroup]):
     ) -> Sequence[RankGroup]:
         """Get all RankGroups"""
         query = select(RankGroup)
-        if filters:
-            if "id" in filters:
-                query = query.where(col(RankGroup.id).in_(filters["id"]))
-            if "name" in filters:
-                query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
-
-        if sort:
-            sort_field, sort_direction = sort
-            column = getattr(RankGroup, sort_field)
-            query = query.order_by(
-                col(column).asc()
-                if sort_direction.upper() == "ASC"
-                else col(column).desc()
-            )
-        else:
-            query = query.order_by(col(RankGroup.position).asc())
+        query = self.admin_query_filters(query, filters)
+        query = self.admin_query_sort(query, sort)
 
         if offset is not None:
             query = query.offset(offset)
@@ -90,3 +72,27 @@ class RankGroupRepository(BaseRepository[RankGroup]):
                 raise ValidationError("Key (slug) already exists.") from None
 
             raise ConflictError("Database integrity error") from e
+
+    def admin_query_filters(self, query, filters):
+        if filters:
+            for field in ["id"]:
+                if field in filters:
+                    column = getattr(RankGroup, field)
+                    query = query.where(col(column).in_(filters[field]))
+            if "name" in filters:
+                query = query.where(col(RankGroup.name).ilike(f'%{filters["name"]}%'))
+        return query
+
+    def admin_query_sort(self, query, sort):
+        if sort:
+            sort_field, sort_direction = sort
+            column = getattr(RankGroup, sort_field)
+            query = query.order_by(
+                col(column).asc()
+                if sort_direction.upper() == "ASC"
+                else col(column).desc()
+            )
+        else:
+            query = query.order_by(col(RankGroup.position).asc())
+
+        return query
