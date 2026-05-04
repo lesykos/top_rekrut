@@ -25,6 +25,7 @@ from app.models.item import Item  # noqa
 from app.models.army_branch import ArmyBranch  # noqa
 from app.models.army_unit import ArmyUnit  # noqa
 from app.models.rank_group import RankGroup  # noqa
+from app.models.vacancies import Vacancy  # noqa
 from app.core.config import settings  # noqa
 
 target_metadata = SQLModel.metadata
