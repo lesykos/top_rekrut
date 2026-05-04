@@ -52,7 +52,7 @@ class ArmyBranchService(BaseService[ArmyBranch]):
         """Get a list of public ArmyBranches"""
         army_branches = self.repository.get_all()
         public = [ArmyBranchPublic.model_validate(branch) for branch in army_branches]
-        return ArmyBranchesPublic(data=public, count=len(public))
+        return ArmyBranchesPublic(data=public)
 
     def create_army_branch(self, army_branch_data: ArmyBranchCreate) -> ArmyBranch:
         """Create new ArmyBranch with validation."""
