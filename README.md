@@ -27,6 +27,25 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - **Alembic** - database migration
 - **Auth0** - User Authentication
 
+## Project Structure
+
+The project is organized into the following main directories:
+```
+├── app
+│   ├── main.py         # application entrypoint
+│   ├── alembic         # migration scripts
+│   ├── api             # router
+│   │   ├── routers     # public API route definitions
+│   │   └── internal    # admin endpoints and protected routes.
+│   ├── core            # configuration, database setup
+│   ├── models          # SQLModel data models, validation, and schemas
+│   ├── repositories    # DB access layer for CRUD operations
+│   └── services        # business logic layer that orchestrates repositories and model operations
+├── tests               # tests
+```
+
+Each section separates concerns so the API, database models, business logic, and repository access are easy to maintain and extend.
+
 ## Installation & Setup
 
 1. Clone the repository:
