@@ -1,6 +1,6 @@
 from pydantic import model_validator
 from sqlmodel import Field, SQLModel
-from slugify import slugify
+from .utils import generate_slug_from_name
 
 
 # Shared properties
@@ -18,10 +18,7 @@ class RankGroupCreate(RankGroupBase):
     @model_validator(mode="before")
     @classmethod
     def generate_slug(cls, data):
-        # Generate slug from name if it's not provided
-        if not data.get("slug") and data.get("name"):
-            data["slug"] = slugify(data["name"])
-        return data
+        return generate_slug_from_name(data)
 
 
 class RankGroupUpdate(SQLModel):

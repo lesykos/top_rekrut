@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from pydantic import model_validator
 from sqlmodel import Field, SQLModel, Relationship
-from slugify import slugify
+from .utils import generate_slug_from_name
 
 if TYPE_CHECKING:
     from .army_unit import ArmyUnit
@@ -23,10 +23,7 @@ class ArmyBranchCreate(ArmyBranchBase):
     @model_validator(mode="before")
     @classmethod
     def generate_slug(cls, data):
-        # Generate slug from name if it's not provided
-        if not data.get("slug") and data.get("name"):
-            data["slug"] = slugify(data["name"])
-        return data
+        return generate_slug_from_name(data)
 
 
 class ArmyBranchUpdate(SQLModel):

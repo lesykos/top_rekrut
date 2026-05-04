@@ -3,8 +3,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, String
 from pydantic import HttpUrl, model_validator, field_validator
 from sqlmodel import Field, SQLModel, Relationship, TIMESTAMP
-from slugify import slugify
-from .utils import get_datetime_utc
+from .utils import get_datetime_utc, generate_slug_from_name
 
 if TYPE_CHECKING:
     from .army_branch import ArmyBranch
@@ -29,10 +28,7 @@ class ArmyUnitCreate(ArmyUnitBase):
     @model_validator(mode="before")
     @classmethod
     def generate_slug(cls, data):
-        # Generate slug from name if it's not provided
-        if not data.get("slug") and data.get("name"):
-            data["slug"] = slugify(data["name"])
-        return data
+        return generate_slug_from_name(data)
 
     @field_validator("website", mode="after")
     @classmethod
