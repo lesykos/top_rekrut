@@ -16,11 +16,7 @@ class ArmyUnitRepository(BaseRepository[ArmyUnit]):
     def count_all(self, filters: dict[str, str] | None = None) -> int:
         """Count all ArmyUnits with optional filters."""
         query = select(func.count()).select_from(ArmyUnit)
-        if filters:
-            if "id" in filters:
-                query = query.where(col(ArmyUnit.id).in_(filters["id"]))
-            if "name" in filters:
-                query = query.where(col(ArmyUnit.name).ilike(f'%{filters["name"]}%'))
+        query = self.admin_query_filters(query, filters)
         return self.session.exec(query).one()
 
     def get_all(
@@ -32,22 +28,8 @@ class ArmyUnitRepository(BaseRepository[ArmyUnit]):
     ) -> Sequence[ArmyUnit]:
         """Get all ArmyUnits"""
         query = select(ArmyUnit)
-        if filters:
-            if "id" in filters:
-                query = query.where(col(ArmyUnit.id).in_(filters["id"]))
-            if "name" in filters:
-                query = query.where(col(ArmyUnit.name).ilike(f'%{filters["name"]}%'))
-
-        if sort:
-            sort_field, sort_direction = sort
-            column = getattr(ArmyUnit, sort_field)
-            query = query.order_by(
-                col(column).asc()
-                if sort_direction.upper() == "ASC"
-                else col(column).desc()
-            )
-        else:
-            query = query.order_by(col(ArmyUnit.id).asc())
+        query = self.admin_query_filters(query, filters)
+        query = self.admin_query_sort(query, sort)
 
         if offset is not None:
             query = query.offset(offset)
@@ -93,3 +75,27 @@ class ArmyUnitRepository(BaseRepository[ArmyUnit]):
                 raise ValidationError("Key (slug) already exists.") from None
 
             raise ConflictError("Database integrity error") from e
+
+    def admin_query_filters(self, query, filters):
+        if filters:
+            for field in ["id"]:
+                if field in filters:
+                    column = getattr(ArmyUnit, field)
+                    query = query.where(col(column).in_(filters[field]))
+            if "name" in filters:
+                query = query.where(col(ArmyUnit.name).ilike(f'%{filters["name"]}%'))
+        return query
+
+    def admin_query_sort(self, query, sort):
+        if sort:
+            sort_field, sort_direction = sort
+            column = getattr(ArmyUnit, sort_field)
+            query = query.order_by(
+                col(column).asc()
+                if sort_direction.upper() == "ASC"
+                else col(column).desc()
+            )
+        else:
+            query = query.order_by(col(ArmyUnit.id).asc())
+
+        return query
