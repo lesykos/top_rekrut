@@ -54,7 +54,7 @@ class RankGroupService(BaseService[RankGroup]):
         rank_groups_public = [
             RankGroupPublic.model_validate(rank_group) for rank_group in rank_groups
         ]
-        return RankGroupsPublic(data=rank_groups_public, count=len(rank_groups_public))
+        return RankGroupsPublic(data=rank_groups_public)
 
     def create_rank_group(self, rank_group_data: RankGroupCreate) -> RankGroup:
         """Create new RankGroup"""

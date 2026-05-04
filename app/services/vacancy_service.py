@@ -6,6 +6,8 @@ from app.models.vacancy import (
     Vacancy,
     VacancyCreate,
     VacancyUpdate,
+    VacancyPublic,
+    VacanciesPublic,
 )
 from app.repositories import VacancyRepository
 from .base import BaseService
@@ -39,13 +41,19 @@ class VacancyService(BaseService[Vacancy]):
         offset, limit = get_offset_limit_from_range(range_)
         return self.repository.get_all(sort, filter_, offset, limit)
 
-    # def get_vacancies_public(self) -> VacanciesPublic:
-    #     """Get a list of public Vacancies"""
-    #     vacancies = self.repository.get_all()
-    #     vacancies_public = [
-    #         VacancyPublic.model_validate(vacancy) for vacancy in vacancies
-    #     ]
-    #     return VacanciesPublic(data=vacancies_public, count=len(vacancies_public))
+    def get_vacancies_public(
+        self,
+        sort: list[str] | None = None,
+        range_: list[int] | None = None,
+        filter_: dict[str, str] | None = None,
+    ) -> VacanciesPublic:
+        """Get a list of public Vacancies"""
+        offset, limit = get_offset_limit_from_range(range_)
+        vacancies = self.repository.get_all(sort, filter_, offset, limit)
+        vacancies_public = [
+            VacancyPublic.model_validate(vacancy) for vacancy in vacancies
+        ]
+        return VacanciesPublic(data=vacancies_public)
 
     def create_vacancy(self, vacancy_data: VacancyCreate) -> Vacancy:
         """Create new Vacancy"""

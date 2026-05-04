@@ -8,6 +8,7 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 
 - RESTful API with structured endpoints.
 - The Model-Service-Repository (MSR) pattern to separate data access, business logic, and API routing.
+- Publicly accessible routes and restricted Admin-only endpoints.
 - Retrieve and manage vacancies, army units, branches, and rank groups.
 - Filtering and Pagination: Index routes support filtering, sorting, pagination and returns total counts via Content-Range header.
 - Centralized decoding/validation of list query params and consistent pagination across list endpoints.
@@ -95,6 +96,17 @@ Create a `.env` file in the root directory from the template `.env.example`
 
 Base URL: `http://localhost:8000/api`
 
+### Public Routes
+
+No authentication required. Used for fetching public data.
+
+- `GET /vacancies` - Get a list of vacancies
+- `GET /army-units` - Get a list of army units
+- `GET /army-branches` - Get a list of army branches
+- `GET /rank-groups` - Get a list of rank groups
+
+### Admin Routes
+Requires `Authorization: Bearer <admin_token>`.
 - `GET /admin/vacancies` - Retrieve list of Vacancies
 - `POST /admin/vacancies` - Create Vacancy
 - `GET /admin/vacancies/{id}` - Get Vacancy by ID

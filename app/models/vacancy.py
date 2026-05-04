@@ -88,3 +88,21 @@ class Vacancy(VacancyBase, table=True):
         sa_type=TIMESTAMP(timezone=True),  # type: ignore
     )
     # army_unit: Optional["ArmyUnit"] = Relationship(back_populates="vacancies")
+
+
+# Properties to return via public API
+class VacancyPublic(SQLModel):
+    id: int
+    name: str
+    slug: str
+    description: str | None
+    responsibilities: str | None
+    requirements: str | None
+    conditions: str | None
+    service_type: VacancyServiceType
+    army_unit_id: int
+    rank_group_id: int | None
+
+
+class VacanciesPublic(SQLModel):
+    data: list[VacancyPublic]

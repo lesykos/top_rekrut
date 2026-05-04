@@ -38,11 +38,12 @@ class RankGroup(RankGroupBase, table=True):
     )
 
 
-# Properties to return via API
-class RankGroupPublic(RankGroupBase):
-    pass
+# Properties to return via public API
+class RankGroupPublic(SQLModel):
+    name: str
+    slug: str
+    position: int
 
 
 class RankGroupsPublic(SQLModel):
     data: list[RankGroupPublic]
-    count: int

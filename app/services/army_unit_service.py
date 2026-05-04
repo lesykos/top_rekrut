@@ -6,8 +6,8 @@ from app.models.army_unit import (
     ArmyUnit,
     ArmyUnitCreate,
     ArmyUnitUpdate,
-    # ArmyUnitPublic,
-    # ArmyUnitsPublic,
+    ArmyUnitPublic,
+    ArmyUnitsPublic,
 )
 from app.repositories import ArmyUnitRepository
 from .base import BaseService
@@ -48,13 +48,19 @@ class ArmyUnitService(BaseService[ArmyUnit]):
         offset, limit = get_offset_limit_from_range(range_)
         return self.repository.get_all(sort, filter_, offset, limit)
 
-    # def get_army_units_public(self) -> ArmyUnitsPublic:
-    #     """Get a list of public ArmyUnits"""
-    #     army_units = self.repository.get_all()
-    #     army_units_public = [
-    #         ArmyUnitPublic.model_validate(army_unit) for army_unit in army_units
-    #     ]
-    #     return ArmyUnitsPublic(data=army_units_public, count=len(army_units_public))
+    def get_army_units_public(
+        self,
+        sort: list[str] | None = None,
+        range_: list[int] | None = None,
+        filter_: dict[str, str] | None = None,
+    ) -> ArmyUnitsPublic:
+        """Get a list of public ArmyUnits"""
+        offset, limit = get_offset_limit_from_range(range_)
+        army_units = self.repository.get_all(sort, filter_, offset, limit)
+        army_units_public = [
+            ArmyUnitPublic.model_validate(army_unit) for army_unit in army_units
+        ]
+        return ArmyUnitsPublic(data=army_units_public)
 
     def create_army_unit(self, army_unit_data: ArmyUnitCreate) -> ArmyUnit:
         """Create new ArmyUnit"""
