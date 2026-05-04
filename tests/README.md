@@ -40,7 +40,7 @@ Key testing packages:
 
 ### Run All Tests
 ```bash
-pytest app/main.py
+pytest
 ```
 
 ### Run Specific Test File
