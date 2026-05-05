@@ -92,6 +92,9 @@ Create a `.env` file in the root directory from the template `.env.example`
 - Army branch: `army-branches`
 - Rank group: `rank-groups`
 
+## Database schema
+![A database schema of the project](./db_schema.png)
+
 ## API Endpoints
 
 Base URL: `http://localhost:8000/api`
