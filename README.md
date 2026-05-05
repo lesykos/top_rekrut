@@ -16,14 +16,14 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 - CORS enabled to allow cross-origin requests.
 - PostgreSQL database integration with SQLModel ORM.
 - Database migration by Alembic.
-- **pytest** as the testing framework: Unit Tests, Integration Tests, API Tests.
+- **pytest** as the testing framework: Unit Tests, Integration Tests, API Tests (Total coverage: 78.22%).
 - Auth0 authentication support.
 
 ## Tech Stack
 
 - **Python** - Core programming language
 - **FastAPI** - Web framework for building APIs
-- **PostgreSQL** - Relational database
+- **PostgreSQL** - Relational database (via Supabase DBaaS)
 - **SQLModel** - ORM based on SQLAlchemy and Pydantic
 - **Alembic** - database migration
 - **Auth0** - User Authentication
@@ -100,8 +100,8 @@ Base URL: `http://localhost:8000/api`
 
 No authentication required. Used for fetching public data.
 
-- `GET /vacancies` - Get a list of vacancies
-- `GET /army-units` - Get a list of army units
+- `GET /vacancies` - Get a list of vacancies (support sort, range and filter query params)
+- `GET /army-units` - Get a list of army units (support sort, range and filter query params)
 - `GET /army-branches` - Get a list of army branches
 - `GET /rank-groups` - Get a list of rank groups
 
