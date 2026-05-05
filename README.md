@@ -4,6 +4,10 @@
 
 A FastAPI-based backend service for managing vacancies in the Armed Forces of Ukraine (AFU), providing detailed information with army unit, army branch, rank group.
 
+Front-end website: [lesykos/top_rekrut_frontend](https://github.com/lesykos/top_rekrut_frontend)
+
+Admin CMS: [lesykos/top_rekrut_admin](https://github.com/lesykos/top_rekrut_admin)
+
 ## Features
 
 - **RESTful** API with structured endpoints.
@@ -103,10 +107,11 @@ Base URL: `http://localhost:8000/api`
 
 No authentication required. Used for fetching public data.
 
-- `GET /vacancies` - Get a list of vacancies (support sort, range and filter query params)
-- `GET /army-units` - Get a list of army units (support sort, range and filter query params)
-- `GET /army-branches` - Get a list of army branches
-- `GET /rank-groups` - Get a list of rank groups
+- `GET /vacancies` - Get a list of vacancies (support sort, range and filter query params).
+- `GET /vacancies/:id` - Get single vacancy by ID.
+- `GET /army-units` - Get a list of army units (support sort, range and filter query params).
+- `GET /army-branches` - Get a list of army branches.
+- `GET /rank-groups` - Get a list of rank groups.
 
 ### Admin Routes
 Requires `Authorization: Bearer <admin_token>`.
