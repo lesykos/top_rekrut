@@ -31,6 +31,14 @@ class VacancyService(BaseService[Vacancy]):
             raise NotFoundError(f"Vacancy {vacancy_id} not found")
         return vacancy
 
+    def get_vacancy_public(self, vacancy_id: int) -> VacancyPublic:
+        """Get Vacancy by ID"""
+        vacancy = self.repository.get_by_id(vacancy_id)
+        if vacancy is None:
+            raise NotFoundError(f"Vacancy {vacancy_id} not found")
+        vacancy_public = VacancyPublic.model_validate(vacancy)
+        return vacancy_public
+
     def get_vacancies(
         self,
         sort: list[str] | None = None,

@@ -4,7 +4,7 @@ from app.api.utils import (
     resolve_start_end_from_range,
     decode_and_validate_query_params,
 )
-from app.models.vacancy import VacanciesPublic
+from app.models.vacancy import VacancyPublic, VacanciesPublic
 from app.services import VacancyService
 
 router = APIRouter(
@@ -40,3 +40,9 @@ def get_vacancies(
 
     response.headers["Content-Range"] = f"vacancies {start}-{end}/{count_vacancies}"
     return vacancies
+
+
+# Show - show Vacancy by ID
+@router.get("/{vacancy_id}", response_model=VacancyPublic)
+def get_vacancy(vacancy_id: int, session: SessionDep) -> VacancyPublic:
+    return VacancyService(session).get_vacancy_public(vacancy_id)
