@@ -1,5 +1,5 @@
 # By adding this we can import directly from the folder level:
-# from app.services import VacancyRepository
+# from app.services import VacancyService
 
 from .base import BaseService
 from .army_branch_service import ArmyBranchService
