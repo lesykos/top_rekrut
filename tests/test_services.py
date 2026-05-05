@@ -8,73 +8,11 @@ import pytest
 from sqlmodel import Session
 from fastapi import HTTPException
 
-from app.models.item import Item, ItemCreate, ItemUpdate
 from app.models.army_branch import ArmyBranch, ArmyBranchCreate, ArmyBranchUpdate
 from app.models.rank_group import RankGroup, RankGroupCreate, RankGroupUpdate
-from app.services.item_service import ItemService
 from app.services.army_branch_service import ArmyBranchService
 from app.services.rank_group_service import RankGroupService
 from app.core.exceptions import NotFoundError, ValidationError
-
-
-class TestItemService:
-    """Test suite for ItemService business logic."""
-
-    @pytest.mark.unit
-    def test_get_item_success(self, db_session: Session):
-        """Test retrieving an item successfully."""
-        service = ItemService(db_session)
-
-        # Create an item first
-        item = Item(name="Test Item", desc="Test")
-        db_session.add(item)
-        db_session.commit()
-        db_session.refresh(item)
-
-        # Get the item
-        result = service.get_item(item.id)
-
-        assert result.name == "Test Item"
-        assert result.id == item.id
-
-    @pytest.mark.unit
-    def test_get_item_not_found(self, db_session: Session):
-        """Test retrieving a non-existent item raises HTTPException."""
-        service = ItemService(db_session)
-
-        with pytest.raises(HTTPException) as exc_info:
-            service.get_item(999)
-
-        assert exc_info.value.status_code == 404
-
-    @pytest.mark.unit
-    def test_get_items_empty(self, db_session: Session):
-        """Test getting items when none exist."""
-        service = ItemService(db_session)
-
-        result = service.get_items()
-
-        assert result.count == 0
-        assert len(result.data) == 0
-
-    @pytest.mark.unit
-    def test_get_items_multiple(self, db_session: Session):
-        """Test getting multiple items."""
-        service = ItemService(db_session)
-
-        # Create items
-        item1 = Item(name="Item 1")
-        item2 = Item(name="Item 2")
-        item3 = Item(name="Item 3")
-        db_session.add(item1)
-        db_session.add(item2)
-        db_session.add(item3)
-        db_session.commit()
-
-        result = service.get_items()
-
-        assert result.count == 3
-        assert len(result.data) == 3
 
 
 class TestArmyBranchService:
@@ -132,7 +70,6 @@ class TestArmyBranchService:
 
         result = service.get_army_branches_public()
 
-        assert result.count == 0
         assert len(result.data) == 0
 
     @pytest.mark.unit
@@ -149,7 +86,7 @@ class TestArmyBranchService:
 
         result = service.get_army_branches_public()
 
-        assert result.count == 2
+        assert len(result.data) == 2
 
     @pytest.mark.unit
     def test_create_army_branch(self, db_session: Session):
@@ -209,7 +146,9 @@ class TestRankGroupService:
 
         # Create a rank group
         rank_group = RankGroup(
-            name="Officers", slug="officers", position=1, min_rank=5, max_rank=9
+            name="Officers",
+            slug="officers",
+            position=1,
         )
         db_session.add(rank_group)
         db_session.commit()
@@ -234,7 +173,7 @@ class TestRankGroupService:
 
         result = service.get_rank_groups_public()
 
-        assert result.count == 0
+        assert len(result.data) == 0
 
     @pytest.mark.unit
     def test_get_rank_groups_multiple(self, db_session: Session):
@@ -243,10 +182,14 @@ class TestRankGroupService:
 
         # Create rank groups
         rg1 = RankGroup(
-            name="Officers", slug="officers", position=1, min_rank=5, max_rank=9
+            name="Officers",
+            slug="officers",
+            position=1,
         )
         rg2 = RankGroup(
-            name="Enlisted", slug="enlisted", position=2, min_rank=1, max_rank=4
+            name="Enlisted",
+            slug="enlisted",
+            position=2,
         )
         db_session.add(rg1)
         db_session.add(rg2)
@@ -254,13 +197,15 @@ class TestRankGroupService:
 
         result = service.get_rank_groups_public()
 
-        assert result.count == 2
+        assert len(result.data) == 2
 
     @pytest.mark.unit
     def test_create_rank_group(self, db_session: Session):
         """Test creating a rank group."""
         service = RankGroupService(db_session)
-        rank_create = RankGroupCreate(name="NCOs", min_rank=4, max_rank=7)
+        rank_create = RankGroupCreate(
+            name="NCOs",
+        )
 
         created = service.create_rank_group(rank_create)
 
@@ -274,7 +219,9 @@ class TestRankGroupService:
 
         # Create a rank group
         rank_group = RankGroup(
-            name="Officers", slug="officers", position=1, min_rank=5, max_rank=9
+            name="Officers",
+            slug="officers",
+            position=1,
         )
         db_session.add(rank_group)
         db_session.commit()

@@ -21,7 +21,6 @@ if config.config_file_name is not None:
 # target_metadata = None
 
 from sqlmodel import SQLModel  # noqa
-from app.models.item import Item  # noqa
 from app.models.army_branch import ArmyBranch  # noqa
 from app.models.army_unit import ArmyUnit  # noqa
 from app.models.rank_group import RankGroup  # noqa
