@@ -81,6 +81,7 @@ class ArmyUnit(ArmyUnitBase, table=True):
 
 # Properties to return via public API
 class ArmyUnitPublic(SQLModel):
+    id: int
     name: str
     slug: str
     description: str | None

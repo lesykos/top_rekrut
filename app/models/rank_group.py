@@ -40,6 +40,7 @@ class RankGroup(RankGroupBase, table=True):
 
 # Properties to return via public API
 class RankGroupPublic(SQLModel):
+    id: int
     name: str
     slug: str
     position: int
