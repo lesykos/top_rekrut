@@ -6,18 +6,18 @@ A FastAPI-based backend service for managing vacancies in the Armed Forces of Uk
 
 ## Features
 
-- RESTful API with structured endpoints.
+- **RESTful** API with structured endpoints.
 - The Model-Service-Repository (MSR) pattern to separate data access, business logic, and API routing.
-- Publicly accessible routes and restricted Admin-only endpoints.
+- **Publicly** accessible routes and restricted **Admin**-only endpoints.
 - Retrieve and manage vacancies, army units, branches, and rank groups.
-- Filtering and Pagination: Index routes support filtering, sorting, pagination and returns total counts via Content-Range header.
+- **Filtering and Pagination**: Index routes support filtering, sorting, pagination and returns total counts via Content-Range header.
 - Centralized decoding/validation of list query params and consistent pagination across list endpoints.
-- Error Handling and Validation with global exception handlers.
-- CORS enabled to allow cross-origin requests.
-- PostgreSQL database integration with SQLModel ORM.
-- Database migration by Alembic.
-- **pytest** as the testing framework: Unit Tests, Integration Tests, API Tests (Total coverage: 78.22%).
-- Auth0 authentication support.
+- **Error Handling** and Validation with global exception handlers.
+- **CORS** enabled to allow cross-origin requests.
+- **PostgreSQL** database integration with SQLModel ORM.
+- Database **migration** by Alembic.
+- **pytest** as the testing framework: Unit Tests, Integration Tests, API Tests (Total coverage: 78%).
+- Auth0 **authentication** support.
 
 ## Tech Stack
 
